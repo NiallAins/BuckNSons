@@ -1,0 +1,47 @@
+<html>
+<head>
+	<style>
+		body {
+			background-color: #111;
+			text-align: left;
+			font-family: Arial;
+			color: #DDD;
+		}
+		h1, p {
+			margin-left: 15%;
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+		a {
+			color: rgb(7, 20, 133);
+			text-decoration: none;
+		}
+		#mainCanvas {
+			width: 1024px;
+			height: 576px;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			cursor : none;
+		}
+		#debugCanvas {
+			width: 1024px;
+			height: 576px;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index : 10;
+			cursor : none;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="mainCanvas" width="1024" height="576"></canvas>
+
+	<script src="scripts/gameObjects.js"></script>
+	<script src="scripts/gameLevels.js"></script>
+	<script src="scripts/gameEngine.js"></script>
+
+</body>
+</html>
