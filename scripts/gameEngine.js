@@ -281,7 +281,7 @@ var loadAssets = function() {
 		console.log(sound);
 		Assets.sounds[element] = sound;
 
-		sound.oncanplay = finishLoading;
+		sound.oncanplaythrough = finishLoading;
 	}
 }
 
