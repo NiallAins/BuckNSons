@@ -235,7 +235,7 @@ var Assets = {
 		levelOne : "backgrounds/lvlOne.png"
 	},
 	sounds : {
-		soundtrack : "sounds/soundtrack.wav"
+		soundtrack : "sounds/soundtrack.flac"
 	}
 };
 
