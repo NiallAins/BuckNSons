@@ -74,6 +74,7 @@ window.onkeydown = function(e) {
    	} else if (key === 16) {
    		if (!kb.shift) {
    			kb.press = "shift";
+   			can.webkitRequestFullscreen();
    		}
        kb.shift = true;
    	}
@@ -125,7 +126,7 @@ window.onkeyup = function(e) {
 
 //Controls object sprite animation (sprite image source, width of single frame, duration of animation [in milliseconds])
 function Sprite(sprite, frWidth, duration, reverse) {
-	this.backward = true;
+	this.backward = false;
 	if (reverse) {
 		this.reverse();
 	}
@@ -151,7 +152,7 @@ function Sprite(sprite, frWidth, duration, reverse) {
 				}
 			} else {
 				this.frNum -= dt / this.frDur;
-				if (this.frNum < 0) {
+				if (this.frNum <= -1) {
 					this.frNum = this.length - 1;
 				}
 			}
@@ -192,7 +193,6 @@ function getCollPoint(x00, y00, x01, y01, x10, y10, x11, y11) {
 
 //Translate Level View (x translation, y translation, absolute position or relatve movement)
 function moveLvl(dx, dy, abs) {
-	light.moveLvl(dx, dy);
 	Level.x += dx;
 	Level.y += dy;
 	can.style.backgroundPosition = Level.x + 'px ' + Level.y + 'px';
@@ -216,17 +216,26 @@ var Assets = {
 		shawnStandR : "sprites/shawnStandR.png",
 		shawnRunL : "sprites/shawnRunL.png",
 		shawnRunR : "sprites/shawnRunR.png",
-		shawnFallR : "sprites/shawnJumpR.png",
-		shawnFallL : "sprites/shawnJumpL.png",
+		shawnFallR : "sprites/shawnFallR.png",
+		shawnFallL : "sprites/shawnFallL.png",
 		shawnJumpR : "sprites/shawnJumpR.png",
 		shawnJumpL : "sprites/shawnJumpL.png",
 		buckMeditate : "sprites/buckMeditate.png",
+		buckSwim : "sprites/buckSwim.png",
+		buckFly : "sprites/buckFly.png",
+		bigGemGreen: "sprites/bigGemGreen.png",
+		bigGemRed: "sprites/bigGemRed.png",
+		bigGemBlue: "sprites/bigGemBlue.png",
+		gemGreen: "sprites/gemGreen.png",
+		gemRed: "sprites/gemRed.png",
+		gemBlue: "sprites/gemBlue.png",
+		morph: "sprites/morph.png"
 	},
 	bgs : {
-		testbg : "backgrounds/testbg.png"
+		levelOne : "backgrounds/lvlOne.png"
 	},
 	sounds : {
-
+		soundtrack : "sounds/soundtrack.wav"
 	}
 };
 
@@ -238,7 +247,7 @@ var loadAssets = function() {
 	var finishLoading = function() {
 		loading -=1;
 		if (loading === 0) {
-			Level.load.testLevel();
+			Level.load.onlyLevel();
 			mainLoop();
 		}
 	}
@@ -266,11 +275,13 @@ var loadAssets = function() {
 	//Load sounds; converting root address to actual object in Assets
 	for (var element in Assets.sounds) {
 		loading += 1;
-		var sound = new Image();
+		var sound = new Audio();
+		console.log(sound);
 		sound.src = Assets.sounds[element];
+		console.log(sound);
 		Assets.sounds[element] = sound;
 
-		sound.onload = finishLoading;
+		sound.oncanplaythrough = finishLoading;
 	}
 }
 
@@ -279,6 +290,7 @@ var time = 0, oldTime = new Date().getTime(), dt = 1;
 
 //For debuging
 var debugMode = false, stopLoop = false;
+
 
 //Animation and Gameplay loop
 function mainLoop() {
@@ -301,7 +313,7 @@ function mainLoop() {
 	}
 	for (var i = 0; i < Level.bgs.length; i += 1) {
 		if (Level.bgs[i].z < 0) {
-			ctx.drawImage(Level.bgs[i].src, Level.x * Level.bgs[i].plX, Level.y * Level.bgs[i].plY);
+			ctx.drawImage(Level.bgs[i].src, (Level.x + Level.bgs[i].x) * Level.bgs[i].plX, (Level.y + Level.bgs[i].y) * Level.bgs[i].plY);
 		}
 	}
 	for (obj in gameObjs) {
@@ -309,12 +321,12 @@ function mainLoop() {
 	}
 	for (var i = 0; i < Level.bgs.length; i += 1) {
 		if (Level.bgs[i].z > 0) {
-			ctx.drawImage(Level.bgs[i].src, Level.x * Level.bgs[i].plX, Level.y * Level.bgs[i].plY);
+			ctx.drawImage(Level.bgs[i].src, (Level.x + Level.bgs[i].x) * Level.bgs[i].plX, (Level.y + Level.bgs[i].y) * Level.bgs[i].plY);
 		}
 	}
 
 	//DEBUG
-	ctx.strokeStyle = "blue";
+	/*ctx.strokeStyle = "blue";
 	ctx.lineWidth = 10;
 	ctx.lineCap = "round";
 	ctx.beginPath();
@@ -322,7 +334,7 @@ function mainLoop() {
 		ctx.moveTo(Level.boundarys[i].x0, Level.boundarys[i].y0 + 5);
 		ctx.lineTo(Level.boundarys[i].x1, Level.boundarys[i].y1 + 5);
 	}
-	ctx.stroke();
+	ctx.stroke();*/
 
 	//Reset Keyboard listener
 	kb.press = null;

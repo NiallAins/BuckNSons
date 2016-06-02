@@ -19,7 +19,7 @@ var Level = {
 
 	//Place objects in level
 	load : {
-		testLevel : function() {
+		onlyLevel : function() {
 			gameObjs = {};
 
 			//Set level background and view
@@ -28,34 +28,27 @@ var Level = {
 
 			//Stores level backgrounds and foregrounds
 			Level.bgs = [	
-				//{src : Assets.bgs.testbg, z : -1, plX : 0.1, plY : 1},
+				{src : Assets.bgs.levelOne, z : -1, x: 0, y: 0, plX : 1, plY : 1},
 			];
 
 			//Stores level boundarys
 			Level.boundarys = [],
 			Level.addBoundary(
 				//Ground
-				{x0 : -100, y0 : 548, x1 : 550, y1 : 548},
-				{x0 : 650, y0 : 548, x1 : 3000, y1 : 548},
-				//Box top
-				{x0 : 550, y0 : 500, x1 : 650, y1 : 500},
-				//Box sides
-				{x0 : 650, y0 : 547, x1 : 650, y1 : 500},
-				{x0 : 550, y0 : 547, x1 : 550, y1 : 500},
-				//Right Slope
-				{x0 : 765, y0 : 425, x1 : 1061, y1 : 295, type : "platform"},
-				//LeftSlopeUp
-				{x0 : 299, y0 : 250, x1 : 108, y1 : 312, type : "platform"},
-				//LeftSlopeDown
-				{x0 : 299, y0 : 250, x1 : 416, y1 : 318, type : "platform"},
-				//LeftPlatform
-				{x0 : 416, y0 : 318, x1 : 634, y1 : 318, type : "platform"}
-
+				{x0 : -100, y0 : 598, x1 : 1300, y1 : 598},
+				{x0 : -100, y0 : 385, x1 : 130, y1 : 385, type: 'platform'},
+				{x0 : 1150, y0 : 385, x1 : 1300, y1 : 385, type: 'platform'},
+				{x0 : -15, y0 : 1000, x1 : -15, y1 : 0},
+				{x0 : 1300, y0 : 1000, x1 : 1300, y1 : 0}
 			);
 
 			//Add level objects
-			gameObjs.shawn = new Shawn(50, 50);
-			gameObjs.buck  = new Buck(400, 100);
+			gameObjs.buck  = new Buck(550, 200);
+			gameObjs.shawn = new Shawn(200, 30);
+			gameObjs.bigGemGreen  = new BigGem(1190, 320, "green");
+			gameObjs.bigGemRed  = new BigGem(40, 320, "red");
+			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
+			gameObjs.bar = new GemBar();
 		}
 	}
 }
