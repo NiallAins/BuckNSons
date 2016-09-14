@@ -1,3 +1,5 @@
+var gameObjs;
+
 var Level = {
 	boundarys : [],
 	ladders : [],
@@ -28,7 +30,8 @@ var Level = {
 
 			//Stores level backgrounds and foregrounds
 			Level.bgs = [	
-				{src : Assets.bgs.levelOne, z : -1, x: 0, y: 0, plX : 1, plY : 1},
+				{src : Assets.bgs.levelOneBg, z : -1, x: 0, y: -7356, plX : 1, plY : 0.5},
+				{src : Assets.bgs.levelOne, z : -1, x: 0, y: 0, plX : 1, plY : 1}
 			];
 
 			//Stores level boundarys
@@ -45,10 +48,26 @@ var Level = {
 			//Add level objects
 			gameObjs.buck  = new Buck(550, 200);
 			gameObjs.shawn = new Shawn(200, 30);
-			gameObjs.bigGemGreen  = new BigGem(1190, 320, "green");
-			gameObjs.bigGemRed  = new BigGem(40, 320, "red");
+			gameObjs.gems = [
+				new Gem(600, -1000, "green"),
+				new Gem(600, -1300, "blue"),
+				new Gem(600, -1600, "red"),
+				new Gem(200, -2400, "green"),
+				new Gem(300, -2500, "green"),
+				new Gem(500, -2700, "blue"),
+				new Gem(600, -2800, "blue"),
+				new Gem(800, -3000, "red"),
+				new Gem(900, -3100, "red")
+			]
+			gameObjs.bigGemRed  = new BigGem(1190, 320, "red");
+			gameObjs.bigGemGreen  = new BigGem(40, 320, "green");
 			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
-			gameObjs.bar = new GemBar();
+			gameObjs.whale1 = new Whale(-400, -6800);
+			gameObjs.whale2 = new Whale(-400, -8000);
+			gameObjs.whale3 = new Whale(-400, -9000);
+			gameObjs.whale4 = new Whale(-500, -9500);
+			gameObjs.whale5 = new Whale(-500, -10000);
+			gameObjs.gemBar = new GemBar();
 		}
 	}
 }

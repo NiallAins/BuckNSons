@@ -229,13 +229,20 @@ var Assets = {
 		gemGreen: "sprites/gemGreen.png",
 		gemRed: "sprites/gemRed.png",
 		gemBlue: "sprites/gemBlue.png",
-		morph: "sprites/morph.png"
+		morph: "sprites/morph.png",
+		whale : "sprites/whale.png"
 	},
 	bgs : {
+		levelOneBg : "backgrounds/lvlOneBg.png",
 		levelOne : "backgrounds/lvlOne.png"
 	},
 	sounds : {
-		soundtrack : "sounds/soundtrack2.wav"
+		soundtrack : "sounds/pancake.mp3",
+		gemRed : "sounds/coin1.ogg",
+		gemBlue : "sounds/coin2.ogg",
+		gemGreen : "sounds/coin3.ogg",
+		gemHit : "sounds/coinBad.ogg",
+		transform : "sounds/splat.wav"
 	}
 };
 
@@ -276,11 +283,10 @@ var loadAssets = function() {
 	for (var element in Assets.sounds) {
 		loading += 1;
 		var sound = new Audio();
-		console.log(sound);
 		sound.src = Assets.sounds[element];
-		console.log(sound);
 		Assets.sounds[element] = sound;
 
+		//sound.load();
 		sound.oncanplaythrough = finishLoading;
 	}
 }
@@ -308,7 +314,13 @@ function mainLoop() {
 	ctx.clearRect(0, 0, can.width, can.height);
 	if (!stopLoop || kb.press === "down") {
 		for (obj in gameObjs) {
-			gameObjs[obj].step();
+			if (Array.isArray(gameObjs[obj])) {
+				for (var i = 0; i < gameObjs[obj].length; i += 1) {
+					gameObjs[obj][i].step();
+				}
+			} else {
+				gameObjs[obj].step();
+			}
 		}
 	}
 	for (var i = 0; i < Level.bgs.length; i += 1) {
@@ -317,7 +329,13 @@ function mainLoop() {
 		}
 	}
 	for (obj in gameObjs) {
-		gameObjs[obj].draw();
+		if (Array.isArray(gameObjs[obj])) {
+			for (var i = 0; i < gameObjs[obj].length; i += 1) {
+				gameObjs[obj][i].draw();
+			}
+		} else {
+			gameObjs[obj].draw();
+		}
 	}
 	for (var i = 0; i < Level.bgs.length; i += 1) {
 		if (Level.bgs[i].z > 0) {
