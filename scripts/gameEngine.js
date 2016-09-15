@@ -131,11 +131,11 @@ function Sprite(sprite, frWidth, duration, reverse) {
 		this.reverse();
 	}
 	this.frNum = 0;
-	this.frDur = duration;
-	this.width = frWidth;
+	this.frDur = (duration) ? duration : 0;
 	this.height = sprite.height;
 	this.length = 0;
 	this.spr = sprite;
+	this.width = (frWidth) ? frWidth : sprite.width;
 	this.length = sprite.width / this.width;
 	this.frDur /= this.length;
 	this.pause = false;
@@ -144,7 +144,7 @@ function Sprite(sprite, frWidth, duration, reverse) {
 		xIn += Level.x;
 		yIn += Level.y;
 		ctx.drawImage(this.spr, Math.floor(this.frNum) * this.width, 0, this.width, this.spr.height, xIn, yIn, this.width, this.spr.height);
-		if (!this.pause) {
+		if (!this.pause && this.frDur !== 0) {
 			if (!this.backward) {
 				this.frNum += dt / this.frDur;
 				if (this.frNum >= this.length) {
@@ -230,17 +230,21 @@ var Assets = {
 		gemRed: "sprites/gemRed.png",
 		gemBlue: "sprites/gemBlue.png",
 		morph: "sprites/morph.png",
-		whale : "sprites/whale.png"
+		whaleR : "sprites/whaleR.png",
+		whaleL : "sprites/whaleL.png",
+		badGem : "sprites/badGem.png"
 	},
 	bgs : {
 		levelOneBg : "backgrounds/lvlOneBg.png",
-		levelOne : "backgrounds/lvlOne.png"
+		levelOne : "backgrounds/lvlOne.png",
+		title1 : "backgrounds/title1.png",
+		title2 : "backgrounds/title2.png"
 	},
 	sounds : {
 		soundtrack : "sounds/pancake.mp3",
-		gemRed : "sounds/coin1.ogg",
+		gemRed : "sounds/coin3.ogg",
 		gemBlue : "sounds/coin2.ogg",
-		gemGreen : "sounds/coin3.ogg",
+		gemGreen : "sounds/coin1.ogg",
 		gemHit : "sounds/coinBad.ogg",
 		transform : "sounds/splat.wav"
 	}
