@@ -51,6 +51,41 @@ var Level = {
 			gameObjs.bigGemGreen  = new BigGem(40, 320, "green");
 			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
 			gameObjs.gemBar = new GemBar();
+
+			/////////////////////////////
+			/*Level.y = 15000;
+			gameObjs.buck  = new BuckFly(550, -14500);
+			gameObjs.gemBar = new GemBar();
+			gameObjs.gems = [
+				new Gem(600, -15800, "green"),
+				new Gem(600, -16000, "green"),
+				new Gem(600, -16200, "green"),
+				new Gem(400, -16300, "blue"),
+				new Gem(400, -16500, "blue"),
+				new Gem(800, -16300, "blue"),
+				new Gem(800, -16500, "blue"),
+				new Gem(100, -16400, "red"),
+				new Gem(100, -16600, "red"),
+				new Gem(1100, -16400, "red"),
+				new Gem(1100, -16600, "red"),
+
+				new BadGem(100, -16000, 8),
+				new BadGem(300, -16100, 8),
+				new BadGem(500, -16200, 8),
+				new BadGem(700, -16300, 8),
+				new BadGem(900, -16400, 8),
+				new BadGem(1100, -16500, 8),
+
+				new BadGem(1100, -16700, 8),
+				new BadGem(1000, -16700, 8),
+				new BadGem(800, -16750, 8),
+				new BadGem(700, -16750, 8),
+				new BadGem(500, -16800, 8),
+				new BadGem(400, -16800, 8),
+				new BadGem(200, -16850, 8),
+				new BadGem(100, -16850, 8)
+			];*/
+			/////////////////////////////
 		}
 	}
 }

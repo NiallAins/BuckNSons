@@ -169,6 +169,24 @@ var setSprite = function(sprIn) {
 	this.spr = sprIn;
 }
 
+var deleteObject = function(target) {
+	for (obj in gameObjs) {
+		if (Array.isArray(gameObjs[obj])) {
+			for (var i = 0; i < gameObjs[obj].length; i += 1) {
+				if (gameObjs[obj][i] === target) {
+					gameObjs[obj].splice(i, 1);
+					break;
+				}
+			}
+		} else {
+			if (gameObjs[obj] === target) {
+				delete gameObjs[obj];
+				break;
+			}
+		}
+	}
+}
+
 //Get Collision point between any two lines
 function getCollPoint(x00, y00, x01, y01, x10, y10, x11, y11) {
     var sx1 = x01 - x00,
@@ -232,7 +250,9 @@ var Assets = {
 		morph: "sprites/morph.png",
 		whaleR : "sprites/whaleR.png",
 		whaleL : "sprites/whaleL.png",
-		badGem : "sprites/badGem.png"
+		badGem : "sprites/badGem.png",
+		badGemFly : "sprites/badGemFly.png",
+		logo : "backgrounds/GnomicLogo.png"
 	},
 	bgs : {
 		levelOneBg : "backgrounds/lvlOneBg.png",
@@ -246,7 +266,8 @@ var Assets = {
 		gemBlue : "sounds/coin2.ogg",
 		gemGreen : "sounds/coin1.ogg",
 		gemHit : "sounds/coinBad.ogg",
-		transform : "sounds/splat.wav"
+		transform : "sounds/splat.wav",
+		static: "sounds/static.ogg"
 	}
 };
 

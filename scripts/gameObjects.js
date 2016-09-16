@@ -228,7 +228,8 @@ function BuckFly(xIn, yIn) {
 
 	this.injured = 0;
 
-	//Initiate timed events
+	//Set music
+	Assets.sounds.static.pause();
 	Assets.sounds.soundtrack.play();
 }
 	BuckFly.prototype.draw = function() {
@@ -417,7 +418,6 @@ function Buck(xIn, yIn) {
 	}
 	Buck.prototype.morph = function() {
 		Assets.sounds.transform.play();
-		console.log("hey");
 		this.morphing = true;
 		this.y += 5;
 		this.x -= 10;
@@ -584,11 +584,14 @@ function Gem(xIn, yIn, colour) {
 				this.explode = true;	
 				(this.colour === 'red') ? gameObjs.gemBar.red += 1 : (this.colour === 'blue') ? gameObjs.gemBar.blue += 1 : gameObjs.gemBar.green += 1;
 		}
+		if (-Level.y + 700 < this.y) {
+			deleteObject(this);
+		}
 	}
 
 function HitGem(xIn, yIn, colour) {
 	this.x = xIn;
-	this.y = yIn;
+	this.y = yIn; 
 	this.dx = (Math.random() * 20) - 5;
 	this.dy = -35 + (Math.random() * 10);
 	this.setSprite = setSprite;
@@ -616,16 +619,18 @@ function HitGem(xIn, yIn, colour) {
 	HitGem.prototype.step = function() {
 		this.dy += 1.5;
 		this.y += this.dy;
-		this.x += this.dx
+		this.x += this.dx;
+		if (-Level.y + 700 < this.y) {
+			deleteObject(this);
+		}
 	}
 
-function BadGem(xIn, yIn) {
+function BadGem(xIn, yIn, dyIn) {
 	this.x = xIn;
 	this.y = yIn;
-	this.dx = (Math.random() * 20) - 5;
-	this.dy = -35 + (Math.random() * 10);
+	this.dy = (dyIn) ? dyIn : 0;
 	this.setSprite = setSprite;
-	this.setSprite(new Sprite(Assets.sprites.badGem, 40, 800, false));
+	(this.dy === 0) ? this.setSprite(new Sprite(Assets.sprites.badGem, 40, 800, false)) : this.setSprite(new Sprite(Assets.sprites.badGemFly, 40, 800, false));
 }
 	BadGem.prototype.draw = function() {
 		this.spr.draw(this.x, this.y);
@@ -635,6 +640,12 @@ function BadGem(xIn, yIn) {
 		if (gameObjs.buck.x + gameObjs.buck.edge.left < this.x + 22 && gameObjs.buck.x + gameObjs.buck.edge.right  > this.x + 22 &&
 			gameObjs.buck.y + gameObjs.buck.edge.top  < this.y + 29 && gameObjs.buck.y + gameObjs.buck.edge.bottom > this.y + 29 ) {
 				gameObjs.buck.hit(2);
+				deleteObject(this);
+		}
+		if (-Level.y - 100 < this.y) {
+			this.y += this.dy;
+		} else if (-Level.y + 700 < this.y) {
+			deleteObject(this);
 		}
 	}
 
@@ -728,8 +739,10 @@ function Whale(xIn, yIn, dirIn) {
 function Menu() {
 	this.title1 = new Sprite(Assets.bgs.title1);
 	this.title2 = new Sprite(Assets.bgs.title2);
+	this.timer = 0;
 
-	this.timer = 0 
+	Assets.sounds.static.loop = true;
+	Assets.sounds.static.play();
 }
 	Menu.prototype.draw = function() {
 		//Timers for title display and fades
@@ -739,14 +752,16 @@ function Menu() {
 			ctx.globalAlpha = ((150 - this.timer) / 30);
 				this.title1.draw(280, -1120);
 			ctx.globalAlpha = 1;
-		} else if (this.timer < 180) {
-			ctx.globalAlpha = 1 - ((180 - this.timer) / 30);
-				this.title2.draw(280, -1150);
-			ctx.globalAlpha = 1;
-		} else if (this.timer < 300) {
+		} else if (this.timer < 210) {
+			if (this.timer > 180) {
+				ctx.globalAlpha = 1 - ((210 - this.timer) / 30);
+					this.title2.draw(280, -1150);
+				ctx.globalAlpha = 1;
+			}
+		} else if (this.timer < 330) {
 			this.title2.draw(280, -1150);
-		} else if (this.timer < 350){
-			ctx.globalAlpha = ((350 - this.timer) / 50);
+		} else if (this.timer < 380){
+			ctx.globalAlpha = ((380 - this.timer) / 50);
 				this.title2.draw(280, -1150);
 			ctx.globalAlpha = 1;
 		}
@@ -756,7 +771,7 @@ function Menu() {
 
 		//Pan downwards
 		if (Level.y > 0) {
-			if (this.timer > 330) {
+			if (this.timer > 380) {
 				Level.y -= 5;
 				if (Level.y < 600) {
 					gameObjs.buck.y += 5;
@@ -785,39 +800,68 @@ function Menu() {
 				new Gem(900, -3100, "red"),
 
 				new Gem(100, -3800, "red"),
-				new Gem(1200, -3800, "red"),
+				new Gem(1200, -4000, "red"),
 				new Gem(100, -3900, "blue"),
-				new Gem(1200, -3900, "blue"),
+				new Gem(1200, -4100, "blue"),
 				new Gem(100, -4000, "green"),
-				new Gem(1200, -4000, "green"),
-				new BadGem(20, -3620),
-				new BadGem(1280, -3620),
+				new Gem(1200, -4200, "green"),
+				new BadGem(20, -3600),
+				new BadGem(1280, -3900),
 				new BadGem(100, -3700),
-				new BadGem(1200, -3700),
+				new BadGem(1200, -4000),
 				new BadGem(200, -3800),
-				new BadGem(1100, -3800),
+				new BadGem(1100, -4100),
 				new BadGem(300, -3900),
-				new BadGem(1000, -3900),
+				new BadGem(1000, -4200),
 
-				new BadGem(600, -4500),
-				new BadGem(500, -4600),
-				new BadGem(700, -4600),
-				new BadGem(400, -4700),
-				new BadGem(800, -4700),
-				new BadGem(300, -4800),
-				new BadGem(900, -4800),
-				new Gem(600, -4650, "red"),
-				new Gem(500, -4500, "blue"),
-				new Gem(700, -4500, "blue"),
-				new Gem(400, -4600, "blue"),
-				new Gem(800, -4600, "blue"),
-				new Gem(100, -4600, "green"),
-				new Gem(1200, -4600, "green"),
+				new BadGem(600, -4800),
+				new BadGem(500, -4900),
+				new BadGem(700, -4900),
+				new BadGem(400, -5000),
+				new BadGem(800, -5000),
+				new BadGem(300, -5100),
+				new BadGem(900, -5100),
+				new Gem(600, -4950, "red"),
+				new Gem(500, -4700, "blue"),
+				new Gem(700, -4700, "blue"),
+				new Gem(400, -4800, "blue"),
+				new Gem(800, -4800, "blue"),
+				new Gem(100, -4900, "green"),
+				new Gem(1200, -4900, "green"),
 
-				new Gem(400, -5500, "green"),
-				new Gem(600, -5700, "green"),
-				new Gem(800, -5500, "green")
+				new Gem(400, -5800, "green"),
+				new Gem(600, -6000, "green"),
+				new Gem(800, -5800, "green"),
+				new Gem(600, -5600, "green"),
+				new Gem(600, -5800, "blue"),
 
+				new Gem(600, -10800, "green"),
+				new Gem(600, -11000, "green"),
+				new Gem(600, -11200, "green"),
+				new Gem(400, -11300, "blue"),
+				new Gem(400, -11500, "blue"),
+				new Gem(800, -11300, "blue"),
+				new Gem(800, -11500, "blue"),
+				new Gem(100, -11400, "red"),
+				new Gem(100, -11600, "red"),
+				new Gem(1100, -11400, "red"),
+				new Gem(1100, -11600, "red"),
+
+				new BadGem(100, -11000, 8),
+				new BadGem(300, -11100, 8),
+				new BadGem(500, -11200, 8),
+				new BadGem(700, -11300, 8),
+				new BadGem(900, -11400, 8),
+				new BadGem(1100, -11500, 8),
+
+				new BadGem(1100, -11700, 8),
+				new BadGem(1000, -11700, 8),
+				new BadGem(800, -11750, 8),
+				new BadGem(700, -11750, 8),
+				new BadGem(500, -11800, 8),
+				new BadGem(400, -11800, 8),
+				new BadGem(200, -11850, 8),
+				new BadGem(100, -11850, 8)
 			]
 			gameObjs.whale1 = new Whale(-200, -6800, 1);
 			gameObjs.whale2 = new Whale(1200, -8000, -1);
@@ -826,6 +870,27 @@ function Menu() {
 			gameObjs.whale5 = new Whale(1200, -10000, -1);
 
 			delete gameObjs.menu;
+		}
+	}
+
+function Logo() {
+	this.ani = new Sprite(Assets.sprites.logo, 560, 300);
+	this.ani.togglePause();
+	this.timer = 0;
+	this.rt = false;
+}
+	Logo.prototype.draw = function() {
+		this.ani.draw(200, -1000);
+	}
+	Logo.prototype.step = function() {
+		if (this.timer === 30) {
+			this.ani.togglePause();
+		}
+		this.timer += 1;
+		if (this.ani.frNum > 11 && this.rt === false) {
+			this.ani.togglePause();
+			this.ani.frNum = 12;
+			this.rt = true;
 		}
 	}
 
