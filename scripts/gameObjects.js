@@ -227,6 +227,7 @@ function BuckFly(xIn, yIn) {
 	this.dy = -30;
 
 	this.injured = 0;
+	this.LevelDy = 5;
 
 	//Set music
 	Assets.sounds.static.pause();
@@ -283,7 +284,14 @@ function BuckFly(xIn, yIn) {
 			this.dx = 0;
 		}
 
-		Level.y += 5;
+		Level.y += this.LevelDy;
+
+		if (Level.y > 16000) {
+			this.LevelDy -= 0.2;
+			if (this.LevelDy <= 0) {
+				gameObjs.buck = new BuckSwim(this.x - 12, this.y);
+			}
+		}
 
 		//Invernurable after hit
 		if (this.injured > 0) {
@@ -431,7 +439,9 @@ function BuckSwim(xIn, yIn) {
 	this.x = xIn;
 	this.y = yIn;
 	this.setSprite = setSprite;
-	this.setSprite(new Sprite(Assets.sprites.buckSwim, 240, 700, false));
+
+	this.setSprite(new Sprite(Assets.sprites.buckTurn, 232, 500, false));
+	this.transform = true;
 
 	this.edge = {
 		left : 15,
@@ -446,12 +456,26 @@ function BuckSwim(xIn, yIn) {
 	this.dx = 0;
 	this.dy = 0;
 
+	this.LevelDx = 0;
+
 	this.injured = 0;
+
+	Level.load.partThree();
 }
 	BuckSwim.prototype.draw = function() {
-		this.spr.draw(this.x, this.y);
+		if (this.injured > 0 && this.injured % 10 < 5) {
+			ctx.globalAlpha = 0.5
+			this.spr.draw(this.x, this.y);
+			ctx.globalAlpha = 1
+		} else {
+			this.spr.draw(this.x, this.y);
+		}
 	}
 	BuckSwim.prototype.step = function() {
+		if (this.transform && this.spr.frNum > 4) {
+			this.setSprite(new Sprite(Assets.sprites.buckSwim, 240, 700, false));
+		}
+
 		//Vertical Movement
 		if (kb.up && this.dy >= -this.max) {
 			this.dy -= this.ac;
@@ -476,21 +500,27 @@ function BuckSwim(xIn, yIn) {
 
 		//Edge Collision check, then move
 		this.y += this.dy;
-		if (this.y > 530) {
-			this.y = 530;
+		if (this.y > 530 - Level.y) {
+			this.y = 530 - Level.y;
 			this.dy = 0;
-		} else if (this.y < -80) {
-			this.y = -80;
+		} else if (this.y < -80 - Level.y) {
+			this.y = -80 - Level.y;
 			this.dy = 0;
 		}
 
 		this.x += this.dx;
-		if (this.x > 1100) {
-			this.x = 1100;
-			this.dx = 0;
-		} else if (this.x < -80) {
-			this.x = -80;
-			this.dx = 0;
+		if (this.x > 1100 - Level.x) {
+			this.x = 1100 - Level.x;
+			this.dx = 5;
+		} else if (this.x < -20 - Level.x) {
+			this.x = -20 - Level.x;
+			this.dx = 5;
+		}
+
+		Level.x += this.LevelDx;
+
+		if (this.LevelDx > -5) {
+			this.LevelDx -= 0.2;
 		}
 
 		//Invernurable after hit
@@ -498,7 +528,24 @@ function BuckSwim(xIn, yIn) {
 			this.injured -= 1;
 		}
 	}
-	BuckSwim.prototype.hit = BuckFly.hit;
+	//Called when Buck receives damage
+	BuckSwim.prototype.hit = function(damage) {
+		if (this.injured === 0) {
+			Assets.sounds.gemHit.load();
+			Assets.sounds.gemHit.play();
+			this.injured = 100;
+			//Sprout gems
+			for (var i = 0; i < damage; i += 1) {
+				if (gameObjs.gemBar.green > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "green"));
+				if (gameObjs.gemBar.blue  > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "blue"));
+				if (gameObjs.gemBar.red   > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "red"));
+			}
+			//Reduce score
+			gameObjs.gemBar.green = gameObjs.gemBar.green > damage ? gameObjs.gemBar.green - damage : 1;
+			gameObjs.gemBar.blue = gameObjs.gemBar.blue > damage ? gameObjs.gemBar.blue - damage : 1;
+			gameObjs.gemBar.red = gameObjs.gemBar.red > damage ? gameObjs.gemBar.red - damage : 1;
+		}
+	}
 
 function BigGem(xIn, yIn, colour) {
 	this.x = xIn;
@@ -695,7 +742,6 @@ function GemBar() {
 		ctx.restore();
 	}
 	GemBar.prototype.step = function() {
-	
 	}
 
 function Whale(xIn, yIn, dirIn) {
@@ -732,6 +778,154 @@ function Whale(xIn, yIn, dirIn) {
 		//Collision with Buck
 		if (gameObjs.buck.x + gameObjs.buck.edge.left < this.x + 450 && gameObjs.buck.x + gameObjs.buck.edge.right  > this.x + 20 &&
 			gameObjs.buck.y + gameObjs.buck.edge.top  < this.y + 200 && gameObjs.buck.y + gameObjs.buck.edge.bottom > this.y + 50 ) {
+				gameObjs.buck.hit(2);
+		}
+	}
+
+function Monk(colIn) {
+	this.setSprite = setSprite;
+	this.col = colIn;
+	this.shootWait = 0;
+	gameObjs.bullets = [];
+
+	switch(this.col) {
+		case "green":
+			this.x = Level.x + 1400;
+			this.y = -Level.y;
+			this.wobble = 0;
+			this.restSpr = new Sprite(Assets.sprites.bossGreen, 218, 400);
+			this.shootSpr = new Sprite(Assets.sprites.bossGreenShoot, 218, 400, function()	 { gameObjs.monkG.setSprite(gameObjs.monkG.restSpr); });
+			this.shootTime = function() { this.rate = 20 + Math.round(100 * Math.random()); }
+			this.shootFunc = function() {
+				this.greenFire += 1;
+				if (this.greenFire === 1) {
+					this.setSprite(this.shootSpr);
+					this.shootTime();
+					this.shootWait = -1;
+				} else if (this.greenFire < 15) {
+					this.shootWait = -1;
+				} else {
+					gameObjs.bullets.push(new Bullet(this.x, this.y + 40, "green"));
+					this.greenFire = 0;
+				}
+			}
+			this.rate = 150;
+			break;
+		case "blue":
+			this.y = -Level.y + 420;
+			this.wobble = 3.2;
+			this.x = Level.x + 5400;
+			this.restSpr = new Sprite(Assets.sprites.bossBlue, 256, 400);
+			this.shootSpr = new Sprite(Assets.sprites.bossBlueShoot, 256, 400, function() { gameObjs.monkB.setSprite(gameObjs.monkB.restSpr); });
+			this.blueFire = 0;
+			this.shootTime = function() { this.rate = 50 + Math.round(100 * Math.random()); }
+			this.shootFunc = function() {
+				this.blueFire += 1;
+				this.blueFire %= 50;
+				if (this.blueFire === 0) {
+					this.shootTime();
+				} else {
+					if (this.blueFire % 5 === 0) {
+						gameObjs.bullets.push(new Bullet(this.x - 10, this.y + 68, "blue"));
+					}
+					this.shootWait = -1; 
+					this.setSprite(this.shootSpr);
+					this.spr.frNum = 0;
+				}
+			}
+			break;
+		case "red":
+			this.y = -Level.y + 190;
+			this.wobble = 1.6;
+			this.x = Level.x + 9400;
+			this.restSpr = new Sprite(Assets.sprites.bossRed, 228, 400);
+			this.shootSpr = new Sprite(Assets.sprites.bossRedShoot, 228, 400, function() { gameObjs.monkR.setSprite(gameObjs.monkR.restSpr); });
+			this.shootTime = function() { this.rate = 50 + Math.round(100 * Math.random()); }
+			this.shootFunc = function() {
+				gameObjs.bullets.push(new Bullet(this.x - 5, this.y + 209, "red"));
+				gameObjs.bullets.push(new Bullet(this.x - 5, this.y + 209, "red"));
+				this.setSprite(this.shootSpr);
+				this.shootTime();
+			}
+			break;
+	}
+	this.shootTime();
+	this.setSprite(this.restSpr);
+}
+	Monk.prototype.draw = function() {
+		this.spr.draw(this.x, this.y);
+	}
+	Monk.prototype.step = function() {
+		this.wobble += 0.05;
+
+		if ((this.col === 'green' && this.x + Level.x < 1000) ||
+			(this.col === 'blue' && this.x + Level.x < 900) ||
+			(this.col === 'red' && this.x + Level.x < 800)) {
+			this.x += 5;
+		}
+		this.y += Math.sin(this.wobble) * 10;
+
+		if (this.x + Level.x < 1500) {
+			this.shootWait += 1;
+			this.shootWait %= this.rate;
+			if (this.shootWait === 0) {
+				this.shootFunc();
+			}
+		}
+	}
+
+function Bullet(xIn, yIn, col) {
+	this.x = xIn;
+	this.y = yIn;
+
+	switch(col) {
+		case "green":
+			this.col = "#21E82E";
+			this.w = 15;
+			this.l = 0;
+			this.dx = 20;
+			break;
+		case "blue":
+			this.col = "#2146E8";
+			this.w = 7;
+			this.l = 10;
+			this.dx = 20;
+			break;
+		case "red":
+			this.col = "#E82E21";
+			this.w = 10;
+			this.l = 25;
+			this.dx = 8;
+			this.dy = Math.random() * 62;
+			break;
+	}
+}
+	Bullet.prototype.draw = function() {
+		ctx.save();
+			ctx.lineWidth = this.w;
+			ctx.lineCap = "round";
+			ctx.strokeStyle = this.col;
+			ctx.beginPath();
+				ctx.moveTo(this.x + Level.x, this.y + Level.y);
+				ctx.lineTo(this.x + Level.x + this.l, this.y + Level.y);
+			ctx.stroke();
+		ctx.restore();
+	}
+	Bullet.prototype.step = function() {
+		this.x -= this.dx;
+
+		if (this.col === "#E82E21") {
+			this.dy += 1;
+			this.y += Math.sin(this.dy / 10) * 15;
+		}
+
+		if (this.x < -Level.x) {
+			deleteObject(this);
+		}
+
+		//Collision with Buck
+		if (gameObjs.buck.x + gameObjs.buck.edge.left < this.x + 100 && gameObjs.buck.x + gameObjs.buck.edge.right > this.x - 100 &&
+			gameObjs.buck.y + gameObjs.buck.edge.top  < this.y && gameObjs.buck.y + gameObjs.buck.edge.bottom > this.y + 10 ) {
 				gameObjs.buck.hit(2);
 		}
 	}
@@ -779,96 +973,7 @@ function Menu() {
 			}
 		} else {
 			//Add level objects
-			gameObjs.shawn = new Shawn(200, -200);
-			gameObjs.gems = [
-				new Gem(600, -1000, "green"),
-				new Gem(600, -1300, "blue"),
-				new Gem(600, -1800, "red"),
-
-				new BadGem(200, -2000),
-				new BadGem(300, -2000),
-				new BadGem(400, -2000),
-				new BadGem(800, -2000),
-				new BadGem(900, -2000),
-				new BadGem(1000, -2000),
-
-				new Gem(200, -2300, "green"),
-				new Gem(300, -2400, "green"),
-				new Gem(500, -2600, "blue"),
-				new Gem(600, -2700, "blue"),
-				new Gem(800, -3000, "red"),
-				new Gem(900, -3100, "red"),
-
-				new Gem(100, -3800, "red"),
-				new Gem(1200, -4000, "red"),
-				new Gem(100, -3900, "blue"),
-				new Gem(1200, -4100, "blue"),
-				new Gem(100, -4000, "green"),
-				new Gem(1200, -4200, "green"),
-				new BadGem(20, -3600),
-				new BadGem(1280, -3900),
-				new BadGem(100, -3700),
-				new BadGem(1200, -4000),
-				new BadGem(200, -3800),
-				new BadGem(1100, -4100),
-				new BadGem(300, -3900),
-				new BadGem(1000, -4200),
-
-				new BadGem(600, -4800),
-				new BadGem(500, -4900),
-				new BadGem(700, -4900),
-				new BadGem(400, -5000),
-				new BadGem(800, -5000),
-				new BadGem(300, -5100),
-				new BadGem(900, -5100),
-				new Gem(600, -4950, "red"),
-				new Gem(500, -4700, "blue"),
-				new Gem(700, -4700, "blue"),
-				new Gem(400, -4800, "blue"),
-				new Gem(800, -4800, "blue"),
-				new Gem(100, -4900, "green"),
-				new Gem(1200, -4900, "green"),
-
-				new Gem(400, -5800, "green"),
-				new Gem(600, -6000, "green"),
-				new Gem(800, -5800, "green"),
-				new Gem(600, -5600, "green"),
-				new Gem(600, -5800, "blue"),
-
-				new Gem(600, -10800, "green"),
-				new Gem(600, -11000, "green"),
-				new Gem(600, -11200, "green"),
-				new Gem(400, -11300, "blue"),
-				new Gem(400, -11500, "blue"),
-				new Gem(800, -11300, "blue"),
-				new Gem(800, -11500, "blue"),
-				new Gem(100, -11400, "red"),
-				new Gem(100, -11600, "red"),
-				new Gem(1100, -11400, "red"),
-				new Gem(1100, -11600, "red"),
-
-				new BadGem(100, -11000, 8),
-				new BadGem(300, -11100, 8),
-				new BadGem(500, -11200, 8),
-				new BadGem(700, -11300, 8),
-				new BadGem(900, -11400, 8),
-				new BadGem(1100, -11500, 8),
-
-				new BadGem(1100, -11700, 8),
-				new BadGem(1000, -11700, 8),
-				new BadGem(800, -11750, 8),
-				new BadGem(700, -11750, 8),
-				new BadGem(500, -11800, 8),
-				new BadGem(400, -11800, 8),
-				new BadGem(200, -11850, 8),
-				new BadGem(100, -11850, 8)
-			]
-			gameObjs.whale1 = new Whale(-200, -6800, 1);
-			gameObjs.whale2 = new Whale(1200, -8000, -1);
-			gameObjs.whale3 = new Whale(-400, -9000, 1);
-			gameObjs.whale4 = new Whale(-200, -9500, 1);
-			gameObjs.whale5 = new Whale(1200, -10000, -1);
-
+			Level.load.partTwo();
 			delete gameObjs.menu;
 		}
 	}

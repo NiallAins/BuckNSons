@@ -125,11 +125,12 @@ window.onkeyup = function(e) {
 \********************/
 
 //Controls object sprite animation (sprite image source, width of single frame, duration of animation [in milliseconds])
-function Sprite(sprite, frWidth, duration, reverse) {
+function Sprite(sprite, frWidth, duration, finFunc, reverse) {
 	this.backward = false;
 	if (reverse) {
 		this.reverse();
 	}
+	this.fin = finFunc;
 	this.frNum = 0;
 	this.frDur = (duration) ? duration : 0;
 	this.height = sprite.height;
@@ -149,6 +150,9 @@ function Sprite(sprite, frWidth, duration, reverse) {
 				this.frNum += dt / this.frDur;
 				if (this.frNum >= this.length) {
 					this.frNum = 0;
+					if (this.fin) {
+						this.fin();
+					}
 				}
 			} else {
 				this.frNum -= dt / this.frDur;
@@ -240,6 +244,7 @@ var Assets = {
 		shawnJumpL : "sprites/shawnJumpL.png",
 		buckMeditate : "sprites/buckMeditate.png",
 		buckSwim : "sprites/buckSwim.png",
+		buckTurn : "sprites/buckTurn.png",
 		buckFly : "sprites/buckFly.png",
 		bigGemGreen: "sprites/bigGemGreen.png",
 		bigGemRed: "sprites/bigGemRed.png",
@@ -252,11 +257,20 @@ var Assets = {
 		whaleL : "sprites/whaleL.png",
 		badGem : "sprites/badGem.png",
 		badGemFly : "sprites/badGemFly.png",
+		bossRed : "sprites/bossRed.png",
+		bossRedShoot : "sprites/bossRedShoot.png",
+		bossBlue : "sprites/bossBlue.png",
+		bossBlueShoot : "sprites/bossBlueShoot.png",
+		bossGreen : "sprites/bossGreen.png",
+		bossGreenShoot : "sprites/bossGreenShoot.png",
 		logo : "backgrounds/GnomicLogo.png"
 	},
 	bgs : {
-		levelOneBg : "backgrounds/lvlOneBg.png",
-		levelOne : "backgrounds/lvlOne.png",
+		partOneBg : "backgrounds/lvlOneBg.png",
+		partTwoBg : "backgrounds/lvlTwoBg.png",
+		platforms : "backgrounds/lvlOne.png",
+		water : "backgrounds/waterbg.png",
+		partOneFg : "backgrounds/foreground.png",
 		title1 : "backgrounds/title1.png",
 		title2 : "backgrounds/title2.png"
 	},
@@ -279,7 +293,7 @@ var loadAssets = function() {
 	var finishLoading = function() {
 		loading -=1;
 		if (loading === 0) {
-			Level.load.onlyLevel();
+			Level.load.partOne();
 			mainLoop();
 		}
 	}
