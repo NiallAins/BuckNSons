@@ -391,14 +391,18 @@ var debugMode = false, stopLoop = false;
 
 var loadingSpr;
 function loadingScreen() {
-	if (loading > 0) {
+	if (loading > 0 || loadfade > 0) {
+		ctx.save();
+		ctx.globalAlpha = loadfade;
 		ctx.clearRect(0, 0, can.width, can.height);
 		loadingSpr.draw(550, 200);
 		ctx.strokeStyle = "#FFF";
 		ctx.lineWidth = 10;
 		ctx.beginPath();
-			ctx.arc(625, 295, 140, 0, (Math.PI * 2) * (1 - (loading / 90)), false);
+			ctx.arc(625, 295, 140, (-Math.PI / 2), (-Math.PI / 2) + ((Math.PI * 2) * (1 - (loading / 90))), false);
 		ctx.stroke();
+		(loading > 0) loadfade = 1 : loadfade -= 0.05;
+		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
 	}
 }
