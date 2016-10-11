@@ -131,20 +131,20 @@ function Sprite(sprite, frWidth, duration, finFunc, reverse) {
 		this.reverse();
 	}
 	this.fin = finFunc;
-	this.frNum = 0;
 	this.frDur = (duration) ? duration : 0;
 	this.height = sprite.height;
 	this.length = 0;
 	this.spr = sprite;
 	this.width = (frWidth) ? frWidth : sprite.width;
 	this.length = sprite.width / this.width;
+	this.frNum = (this.backward) ? this.length - 1 : 0;
 	this.frDur /= this.length;
 	this.pause = false;
 }
 	Sprite.prototype.draw = function(xIn, yIn) {
 		xIn += Level.x;
 		yIn += Level.y;
-		ctx.drawImage(this.spr, Math.floor(this.frNum) * this.width, 0, this.width, this.spr.height, xIn, yIn, this.width, this.spr.height);
+		ctx.drawImage(this.spr, Math.floor(this.frNum) * this.width, 0, this.width, this.height, xIn, yIn, this.width, this.height);
 		if (!this.pause && this.frDur !== 0) {
 			if (!this.backward) {
 				this.frNum += dt / this.frDur;
@@ -156,8 +156,11 @@ function Sprite(sprite, frWidth, duration, finFunc, reverse) {
 				}
 			} else {
 				this.frNum -= dt / this.frDur;
-				if (this.frNum <= -1) {
+				if (this.frNum <= 0) {
 					this.frNum = this.length - 1;
+					if (this.fin) {
+						this.fin();
+					}
 				}
 			}
 		}
@@ -226,6 +229,16 @@ function moveLvl(dx, dy, abs) {
 
 //Canvas Initalization
 var can = document.getElementById('mainCanvas');
+if (window.innerHeight > 1900) {
+	can.style.Width = '1980px';
+	can.style.height = '1080px';
+} else if (window.innerWidth < 1200) {
+	can.style.width = '100vw';
+	can.style.height = '50vw';
+} else {
+	can.style.width = '1280px';
+	can.style.height = '640px';
+}
 var ctx = can.getContext('2d');
 
 //Stores all game objects
@@ -246,6 +259,14 @@ var Assets = {
 		buckSwim : "sprites/buckSwim.png",
 		buckTurn : "sprites/buckTurn.png",
 		buckFly : "sprites/buckFly.png",
+		shawnDead : "sprites/shawnDead.png",
+		shawnFall : "sprites/shawnFall.png",
+		hatDead : "sprites/hatDead.png",
+		buckDead : "sprites/buckDead.png",
+		buckUnmorph : "sprites/buckUnmorph.png",
+		buckFight : "sprites/buckFight.png",
+		buckEnd : "sprites/buckEnd.png",
+		buckCowar : "sprites/buckCowar.png",
 		bigGemGreen: "sprites/bigGemGreen.png",
 		bigGemRed: "sprites/bigGemRed.png",
 		bigGemBlue: "sprites/bigGemBlue.png",
@@ -263,16 +284,29 @@ var Assets = {
 		bossBlueShoot : "sprites/bossBlueShoot.png",
 		bossGreen : "sprites/bossGreen.png",
 		bossGreenShoot : "sprites/bossGreenShoot.png",
-		logo : "backgrounds/GnomicLogo.png"
+		bossFinalGreen : "sprites/finalGreen.png",
+		bossFinalBlue : "sprites/finalBlue.png",
+		bossFinalRed : "sprites/finalRed.png",
+		attackGreen : "sprites/attackGreen.png",
+		attackBlue : "sprites/attackBlue.png",
+		attackRed : "sprites/finalRed.png",
+		mashlr : "sprites/mashlr.png",
+		mashud : "sprites/mashud.png"
 	},
 	bgs : {
 		partOneBg : "backgrounds/lvlOneBg.png",
 		partTwoBg : "backgrounds/lvlTwoBg.png",
+		partThreeBg : "backgrounds/lvlThree.png",
 		platforms : "backgrounds/lvlOne.png",
 		water : "backgrounds/waterbg.png",
 		partOneFg : "backgrounds/foreground.png",
 		title1 : "backgrounds/title1.png",
-		title2 : "backgrounds/title2.png"
+		title2 : "backgrounds/title2.png",
+		credits1 : "backgrounds/credits1.png",
+		credits2 : "backgrounds/credits2.png",
+		credits3 : "backgrounds/credits3.png",
+		credits4 : "backgrounds/credits4.png",
+		credits5 : "backgrounds/credits5.png"
 	},
 	sounds : {
 		soundtrack : "sounds/pancake.mp3",
@@ -281,12 +315,29 @@ var Assets = {
 		gemGreen : "sounds/coin1.ogg",
 		gemHit : "sounds/coinBad.ogg",
 		transform : "sounds/splat.wav",
-		static: "sounds/static.ogg"
+		static: "sounds/intro/Panstretch.mp3",
+		step1: "sounds/intro/step1.mp3",
+		step2: "sounds/intro/step2.mp3",
+		step3: "sounds/intro/step3.mp3",
+		jump: "sounds/intro/jump.wav",
+		land: "sounds/intro/land.wav",
+		takeoff: "sounds/intro/takeoff.mp3",
+		morph: "sounds/intro/morph.mp3",
+		firel: "sounds/flight/fireleft.mp3",
+		firec: "sounds/flight/firecenter.mp3",
+		firer: "sounds/flight/fireright.mp3",
+		whalel: "sounds/flight/whalel.mp3",
+		whaler: "sounds/flight/whaler.mp3",
+		fowardfly: "sounds/flight/foward.wav",
+		rightfly: "sounds/flight/Flutter2.wav",
+		leftfly: "sounds/flight/Flutter1.wav",
+		flightLoop: "sounds/flight/flightLoop.mp3"
 	}
 };
 
 //Ensures all game assets are loaded before starting game
 var loadAssets = function() {
+
 	var loading = 0;
 
 	//Start game after all assets are loaded
@@ -294,6 +345,8 @@ var loadAssets = function() {
 		loading -=1;
 		if (loading === 0) {
 			Level.load.partOne();
+			gameLoading = false;
+			document.getElementById("loadCanvas").style.opacity = "0";
 			mainLoop();
 		}
 	}
@@ -324,6 +377,7 @@ var loadAssets = function() {
 		var sound = new Audio();
 		sound.src = Assets.sounds[element];
 		Assets.sounds[element] = sound;
+		sound.volume = 0.1;
 
 		//sound.load();
 		sound.oncanplaythrough = finishLoading;
@@ -336,6 +390,20 @@ var time = 0, oldTime = new Date().getTime(), dt = 1;
 //For debuging
 var debugMode = false, stopLoop = false;
 
+var ctxL = document.getElementById("loadCanvas").getContext('2d');
+function loadingScreen(spr) {
+	ctxL.clearRect(0, 0, 300, 300);
+	spr.draw(50, 50);
+	if (gameLoading) {
+		window.requestAnimationFrame(loadingScreen);
+	}
+}
+function initLoading() {
+	gameloading = true;
+	var spr = new Image();
+	spr.src = Assets.sprites.loading;
+	spr.onload = loadingScreen(new Sprite(spr, 140, 300, false));
+}
 
 //Animation and Gameplay loop
 function mainLoop() {

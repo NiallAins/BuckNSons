@@ -21,6 +21,53 @@ var Level = {
 
 	//Place objects in level
 	load : {
+		test : function() {
+			gameObjs = {};
+
+			//Set level background and view
+			Level.x = 0;
+			Level.y = 1200;
+
+			//Stores level backgrounds and foregrounds
+			Level.bgs = [
+				{src : Assets.bgs.partOneBg, z : -1, x: 0, y: -16080, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partOneBg, z : -1, x: 11681, y: -16080, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partTwoBg, z : -1, x: 1280, y: -16069, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partTwoBg, z : -1, x: 8240, y: -16069, plX : 1, plY : 0.5},
+				{src : Assets.bgs.water, z : -1, x: 0, y: 0, plX : 1, plY : 0.6},
+				{src : Assets.bgs.water, z : -1, x: 11681, y: 50, plX : 1, plY : 0.6},
+				{src : Assets.bgs.partOneFg, z : -1, x: 0, y: -30, plX : 1, plY : 0.8},
+				{src : Assets.bgs.platforms, z : -1, x: 0, y: 0, plX : 1, plY : 1},
+				{src : Assets.bgs.partThreeBg, z : -1, x: 11681, y: -131, plX : 1, plY : 1}
+			];
+
+			//Stores level boundarys
+			Level.boundarys = [],
+			Level.addBoundary(
+				//Ground
+				{x0 : -100, y0 : 598, x1 : 1300, y1 : 598},
+				{x0 : -100, y0 : 385, x1 : 130, y1 : 385, type: 'platform'},
+				{x0 : 1150, y0 : 385, x1 : 1300, y1 : 385, type: 'platform'},
+				{x0 : -15, y0 : 1000, x1 : -15, y1 : 0},
+				{x0 : 1300, y0 : 1000, x1 : 1300, y1 : 0}
+			);
+
+			gameObjs.buck  = new Buck(550, -400);
+			gameObjs.bigGemRed  = new BigGem(1190, 320, "red");
+			gameObjs.bigGemGreen  = new BigGem(40, 320, "green");
+			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
+			gameObjs.gemBar = new GemBar();
+			Level.x = -11681;
+			Level.y = 160;
+			gameObjs.buck  = new BuckFight( -Level.x + 350, 402, new Sprite(Assets.sprites.buckDead));
+			gameObjs.shawn = new ShawnDead(	-Level.x + 600, 402, new Sprite(Assets.sprites.shawnFall),
+											-Level.x + 700, 402, new Sprite(Assets.sprites.hatDead));
+			gameObjs.gemBar.red = 10;
+			gameObjs.gemBar.blue = 10;
+			gameObjs.gemBar.green = 10;
+			gameObjs.gems = [];
+		},
+
 		partOne : function() {
 			gameObjs = {};
 
@@ -31,11 +78,14 @@ var Level = {
 			//Stores level backgrounds and foregrounds
 			Level.bgs = [
 				{src : Assets.bgs.partOneBg, z : -1, x: 0, y: -16080, plX : 1, plY : 0.5},
-				{src : Assets.bgs.partTwoBg, z : -1, x: 1280, y: -16070, plX : 1, plY : 0.5},
-				{src : Assets.bgs.partTwoBg, z : -1, x: 8240, y: -16070, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partOneBg, z : -1, x: 11681, y: -16080, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partTwoBg, z : -1, x: 1280, y: -16069, plX : 1, plY : 0.5},
+				{src : Assets.bgs.partTwoBg, z : -1, x: 8240, y: -16069, plX : 1, plY : 0.5},
 				{src : Assets.bgs.water, z : -1, x: 0, y: 0, plX : 1, plY : 0.6},
+				{src : Assets.bgs.water, z : -1, x: 11681, y: 50, plX : 1, plY : 0.6},
 				{src : Assets.bgs.partOneFg, z : -1, x: 0, y: -30, plX : 1, plY : 0.8},
-				{src : Assets.bgs.platforms, z : -1, x: 0, y: 0, plX : 1, plY : 1}
+				{src : Assets.bgs.platforms, z : -1, x: 0, y: 0, plX : 1, plY : 1},
+				{src : Assets.bgs.partThreeBg, z : -1, x: 11681, y: -131, plX : 1, plY : 1}
 			];
 
 			//Stores level boundarys
@@ -55,12 +105,6 @@ var Level = {
 			gameObjs.bigGemGreen  = new BigGem(40, 320, "green");
 			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
 			gameObjs.gemBar = new GemBar();
-			/*gameObjs.buck  = new BuckFly(550, -17000);
-			Level.y = 16000;
-			gameObjs.gemBar.red = 10;
-			gameObjs.gemBar.blue = 10;
-			gameObjs.gemBar.green = 10;
-			gameObjs.gems = [];*/
 		},
 
 		partTwo : function() {
@@ -122,9 +166,9 @@ var Level = {
 
 				//Whales//
 
-				new BadGem(700, -11400, 8),
-				new BadGem(600, -11500, 8),
-				new BadGem(500, -11400, 8),
+				new BadGem(700, -11400, 8, 22),
+				new BadGem(600, -11500, 8, 23),
+				new BadGem(500, -11400, 8, 24),
 				new Gem(600, -11200, "red"),	
 
 				new Gem(600, -11800, "green"),
@@ -156,31 +200,31 @@ var Level = {
 				new BadGem(100, -12850, 8),
 
 				new Gem(0, -14000, "green"),
-				new BadGem(100, -14000, 0),
-				new BadGem(200, -14000, 0),
-				new BadGem(300, -14000, 0),
+				new BadGem(100, -14000),
+				new BadGem(200, -14000),
+				new BadGem(300, -14000),
 				new BadGem(400, -14200, 8),
 				new Gem(400, -14000, "blue"),
-				new BadGem(500, -14000, 0),
+				new BadGem(500, -14000),
 				new Gem(600, -14100, "red"),
-				new BadGem(600, -14000, 0),
+				new BadGem(600, -14000),
 				new Gem(600, -13850, "red"),
-				new BadGem(700, -14000, 0),
+				new BadGem(700, -14000),
 				new BadGem(800, -14200, 8),
 				new Gem(800, -14000, "blue"),
-				new BadGem(900, -14000, 0),
-				new BadGem(1000, -14000, 0),
-				new BadGem(1100, -14000, 0),
+				new BadGem(900, -14000),
+				new BadGem(1000, -14000),
+				new BadGem(1100, -14000),
 				new Gem(1200, -14000, "green"),
 
-				new Gem(300, -14900, "blue"),
+				new Gem(300, -14900, "green"),
 				new Gem(400, -15000, "blue"),
-				new Gem(500, -14900, "blue"),
+				new Gem(500, -14900, "green"),
 				new Gem(400, -14800, "blue"),
 				new Gem(400, -14900, "red"),
-				new Gem(700, -14900, "blue"),
+				new Gem(700, -14900, "green"),
 				new Gem(800, -15000, "blue"),
-				new Gem(900, -14900, "blue"),
+				new Gem(900, -14900, "green"),
 				new Gem(800, -14800, "blue"),
 				new Gem(800, -14900, "red")
 			];
