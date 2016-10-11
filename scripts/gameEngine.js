@@ -394,10 +394,13 @@ function loadingScreen() {
 		ctx.clearRect(0, 0, can.width, can.height);
 		loadingSpr.draw(550, 200);
 		ctx.strokeStyle = "#FFF";
+		ctx.fillStyle = "#FFF";
 		ctx.lineWidth = 10;
 		ctx.beginPath();
 			ctx.arc(625, 295, 140, (-Math.PI / 2), (-Math.PI / 2) + ((Math.PI * 2) * (1 - (loading / 90))), false);
 		ctx.stroke();
+		ctx.font = "20pt Monospace";
+		ctx.fillText("SHIFT for Fullscreen", 600, 700);
 		(loading > 0) ? loadfade = 1 : loadfade -= 0.05;
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
