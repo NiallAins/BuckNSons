@@ -402,7 +402,7 @@ function loadingScreen() {
 		ctx.beginPath();
 			ctx.arc(625, 295, 140, (-Math.PI / 2), (-Math.PI / 2) + ((Math.PI * 2) * (1 - (loading / 90))), false);
 		ctx.stroke();
-		(loading > 0) loadfade = 1 : loadfade -= 0.05;
+		(loading > 0) ? loadfade = 1 : loadfade -= 0.05;
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
 	}
