@@ -344,10 +344,6 @@ var loadAssets = function() {
 	//Start game after all assets are loaded
 	var finishLoading = function() {
 		loading -=1;
-		if (loading === 0) {
-			Level.load.partOne();
-			mainLoop();
-		}
 	}
 
 	//Load sprites; converting root address to actual object in Assets
@@ -405,6 +401,9 @@ function loadingScreen() {
 		(loading > 0) ? loadfade = 1 : loadfade -= 0.05;
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
+	} else {
+		Level.load.partOne();
+		mainLoop();
 	}
 }
 function initLoading() {
