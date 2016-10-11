@@ -390,6 +390,7 @@ var time = 0, oldTime = new Date().getTime(), dt = 1;
 var debugMode = false, stopLoop = false;
 
 var loadingSpr;
+var loadfade = 1;
 function loadingScreen() {
 	if (loading > 0 || loadfade > 0) {
 		ctx.save();
