@@ -338,14 +338,14 @@ var Assets = {
 //Ensures all game assets are loaded before starting game
 var loadAssets = function() {
 
-	var loading = 0;
+	loading = 0;
+	initLoading();
 
 	//Start game after all assets are loaded
 	var finishLoading = function() {
 		loading -=1;
 		if (loading === 0) {
 			Level.load.partOne();
-			gameLoading = false;
 			document.getElementById("loadCanvas").style.opacity = "0";
 			mainLoop();
 		}
@@ -390,19 +390,26 @@ var time = 0, oldTime = new Date().getTime(), dt = 1;
 //For debuging
 var debugMode = false, stopLoop = false;
 
-var ctxL = document.getElementById("loadCanvas").getContext('2d');
-function loadingScreen(spr) {
-	ctxL.clearRect(0, 0, 300, 300);
-	spr.draw(50, 50);
-	if (gameLoading) {
+var loadingSpr;
+function loadingScreen() {
+	ctx.clearRect(0, 0, can.width, can.height);
+	loadingSpr.draw(550, 200);
+	ctx.strokeStyle = "#FFF";
+	ctx.lineWidth = 10;
+	ctx.beginPath();
+		ctx.arc(625, 295, 140, 0, (Math.PI * 2) * (1 - (loading / 90)), false);
+	ctx.stroke();
+	if (loading > 0) {
 		window.requestAnimationFrame(loadingScreen);
 	}
 }
 function initLoading() {
-	gameloading = true;
-	var spr = new Image();
-	spr.src = Assets.sprites.loading;
-	spr.onload = loadingScreen(new Sprite(spr, 140, 300, false));
+	loadingSpr = new Image();
+	loadingSpr.src = "sprites/loading.png";
+	loadingSpr.onload = function() {
+		loadingSpr = new Sprite(loadingSpr, 140, 100);
+		loadingScreen();
+	}
 }
 
 //Animation and Gameplay loop
