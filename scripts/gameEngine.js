@@ -346,7 +346,6 @@ var loadAssets = function() {
 		loading -=1;
 		if (loading === 0) {
 			Level.load.partOne();
-			document.getElementById("loadCanvas").style.opacity = "0";
 			mainLoop();
 		}
 	}
@@ -392,14 +391,14 @@ var debugMode = false, stopLoop = false;
 
 var loadingSpr;
 function loadingScreen() {
-	ctx.clearRect(0, 0, can.width, can.height);
-	loadingSpr.draw(550, 200);
-	ctx.strokeStyle = "#FFF";
-	ctx.lineWidth = 10;
-	ctx.beginPath();
-		ctx.arc(625, 295, 140, 0, (Math.PI * 2) * (1 - (loading / 90)), false);
-	ctx.stroke();
 	if (loading > 0) {
+		ctx.clearRect(0, 0, can.width, can.height);
+		loadingSpr.draw(550, 200);
+		ctx.strokeStyle = "#FFF";
+		ctx.lineWidth = 10;
+		ctx.beginPath();
+			ctx.arc(625, 295, 140, 0, (Math.PI * 2) * (1 - (loading / 90)), false);
+		ctx.stroke();
 		window.requestAnimationFrame(loadingScreen);
 	}
 }
