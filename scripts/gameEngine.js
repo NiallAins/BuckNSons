@@ -290,7 +290,7 @@ var Assets = {
 		attackGreen : "sprites/attackGreen.png",
 		attackBlue : "sprites/attackBlue.png",
 		attackRed : "sprites/attackRed.png",
-		finalDeath : "sprites/finalDeath.png",
+		finalDeath : "sprites/finaldeath.png",
 		mashlr : "sprites/mashlr.png",
 		mashud : "sprites/mashud.png",
 		mashall : "sprites/mashall.png"
