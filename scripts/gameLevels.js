@@ -52,20 +52,15 @@ var Level = {
 				{x0 : 1300, y0 : 1000, x1 : 1300, y1 : 0}
 			);
 
-			gameObjs.buck  = new Buck(550, -400);
-			gameObjs.bigGemRed  = new BigGem(1190, 320, "red");
-			gameObjs.bigGemGreen  = new BigGem(40, 320, "green");
-			gameObjs.bigGemBlue  = new BigGem(600, 20, "blue");
 			gameObjs.gemBar = new GemBar();
-			Level.x = -11681;
-			Level.y = 160;
-			gameObjs.buck  = new BuckFight( -Level.x + 350, 402, new Sprite(Assets.sprites.buckDead));
-			gameObjs.shawn = new ShawnDead(	-Level.x + 600, 402, new Sprite(Assets.sprites.shawnFall),
-											-Level.x + 700, 402, new Sprite(Assets.sprites.hatDead));
 			gameObjs.gemBar.red = 10;
 			gameObjs.gemBar.blue = 10;
 			gameObjs.gemBar.green = 10;
+			Level.y = 14000;
+			gameObjs.buck  = new BuckFly( -Level.x + 350, 402, new Sprite(Assets.sprites.buckDead));
 			gameObjs.gems = [];
+
+			Level.load.partTwo();
 		},
 
 		partOne : function() {

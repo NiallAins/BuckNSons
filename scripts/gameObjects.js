@@ -44,12 +44,12 @@ function Shawn(xIn, yIn) {
 	this.paused = false;
 
 	this.footstep = null;
-	Assets.sounds.step1.volume = 0.03;
-	Assets.sounds.step2.volume = 0.03;
-	Assets.sounds.step3.volume = 0.03;
-	/*Assets.sounds.gemGreen.volume = 0.4;
-	Assets.sounds.gemBlue.volume = 0.4;
-	Assets.sounds.gemRed.volume = 0.4;*/
+	Assets.sounds.step1.volume = 0.05;
+	Assets.sounds.step2.volume = 0.05;
+	Assets.sounds.step3.volume = 0.05;
+	Assets.sounds.gemGreen.volume = 0.1;
+	Assets.sounds.gemBlue.volume = 0.1;
+	Assets.sounds.gemRed.volume = 0.1;
 }	
 	Shawn.prototype.draw = function() {
 		this.spr.draw(this.x, this.y);
@@ -178,6 +178,7 @@ function Shawn(xIn, yIn) {
 		if (typeof(gameObjs.bigGemBlue) !== 'undefined' &&
 			this.x + this.edge.left < gameObjs.bigGemBlue.x + 20 && this.x + this.edge.right > gameObjs.bigGemBlue.x + 20 &&
 			this.y < gameObjs.bigGemBlue.y + 27                  && this.y + this.edge.bottom > gameObjs.bigGemBlue.y + 27 ) {
+
 				Assets.sounds.gemBlue.play();
 				gameObjs.gemBar.blue += 1;
 				delete gameObjs.bigGemBlue;
@@ -242,6 +243,9 @@ function Shawn(xIn, yIn) {
 	}
 
 function BuckFly(xIn, yIn) {
+	Assets.sounds.takeoff.play();
+	Assets.sounds.takeoff.volume = 0.1;
+
 	this.x = xIn;
 	this.y = yIn;
 	this.setSprite = setSprite;	
@@ -265,13 +269,13 @@ function BuckFly(xIn, yIn) {
 
 	//Set music
 	Assets.sounds.static.pause();
-	Assets.sounds.flightLoop.volume = 0.1;
-	Assets.sounds.flightLoop.loop = true;
-	Assets.sounds.flightLoop.play();
+	//Assets.sounds.flightLoop.volume = 0.1;
+	//Assets.sounds.flightLoop.loop = true;
+	//Assets.sounds.flightLoop.play();
 	Assets.sounds.soundtrack.play();
-	Assets.sounds.leftfly.volume = 1;
-	Assets.sounds.fowardfly.volume = 1;
-	Assets.sounds.rightfly.volume = 1;
+	Assets.sounds.leftfly.volume = 0.1;
+	Assets.sounds.fowardfly.volume = 0.6;
+	Assets.sounds.rightfly.volume = 0.1;
 
 	this.timer = 0;
 }
@@ -290,7 +294,7 @@ function BuckFly(xIn, yIn) {
 		} else if (kb.right) {
 			(this.timer === 15) ? Assets.sounds.rightfly.play() : this.timer += 1;
 		} else if (kb.up) {
-			(this.timer === 15) ? Assets.sounds.fowardfly.play() : this.timer += 1;
+			(this.timer === 10) ? Assets.sounds.fowardfly.play() : this.timer += 1;
 		}
 		if (kb.release === "up" || kb.release === "left" || kb.release === "right") {
 			this.timer = 0;
@@ -494,6 +498,12 @@ function BuckSwim(xIn, yIn) {
 	this.y = yIn;
 	this.setSprite = setSprite;
 
+	Assets.sounds.hTurn.volume = 1;
+	Assets.sounds.hTurn.play();
+	Assets.sounds.hTurn.volume = 0.2;
+	Assets.sounds.space.loop = true;
+	Assets.sounds.space.play();
+
 	this.setSprite(new Sprite(Assets.sprites.buckTurn, 232, 500, false));
 	this.transform = true;
 
@@ -622,6 +632,7 @@ function BuckDead(xIn, yIn, dxIn, dyIn) {
 
 	this.dx = dxIn;
 	this.dy = dyIn;
+	this.sound = true;
 
 	this.damp = 1;
 	this.lvlDx = 5;
@@ -662,6 +673,11 @@ function BuckDead(xIn, yIn, dxIn, dyIn) {
 			this.angS += 2 * this.lvlDx / 2;
 			this.angH -= 5 * this.lvlDx / 2;
 		} else if (Level.y > 1000) {
+			if (this.sound) {
+				Assets.sounds.falling.volume = 1;
+				Assets.sounds.falling.play();
+				this.sound = false;
+			}
 			this.lvlDy += (this.lvlDy < 100) ? 1 : 0;
 			Level.y -= this.lvlDy;
 			this.dy = this.lvlDy
@@ -698,6 +714,9 @@ function BuckDead(xIn, yIn, dxIn, dyIn) {
 				this.yS = 402;
 				this.angH = 180;
 				this.yH = 402;
+				Assets.sounds.falling.pause();
+				Assets.sounds.thump.volume = 0.8;
+				Assets.sounds.thump.play();
 				gameObjs.shawn = new ShawnDead(this.xS, this.yS, this.shawnSpr, this.xH, this.yH, this.hatSpr);
 			}
 		}
@@ -706,19 +725,87 @@ function BuckDead(xIn, yIn, dxIn, dyIn) {
 function BuckFight(xIn, yIn, sprIn) {
 	this.x = xIn - 110;
 	this.y = yIn - 62;
+	this.dx = 0;
+	this.dy = 0;
 	gameObjs.flyGems = [];
 	this.timer = 0;
 	this.restSpr = new Sprite(Assets.sprites.buckFight, 104, 800, false);
 	this.cowarSpr = new Sprite(Assets.sprites.buckCowar, 140, 0, false);
-	this.mash
+	this.mash;
 	this.setSprite = setSprite;
 	this.setSprite(sprIn);
+	this.alive = 0;
+	this.angle = 0;
+	this.rad = 0;
+	this.lDy = 0;
 	gameObjs.mash = new Mash();
+
+	this.edge = {
+		left : 0,
+		right: 120,
+		bottom : 184,
+		top : 28
+	};
 }
 	BuckFight.prototype.draw = function() {
+		if (this.alive >= 2) {
+			ctx.save();
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = '#FFF';
+				ctx.globalCompositeOperation = "color-dodge";
+				ctx.beginPath();
+					ctx.arc(this.x + Level.x + 60 + (20 * Math.cos(this.angle)),
+							this.y + Level.y + 90 + (20 * Math.sin(this.angle)), this.rad, 0, 2 * Math.PI, false);
+				ctx.stroke();
+				ctx.fillStyle = 'rgba(232, 46, 33, 0.8)';
+	  			ctx.fill();
+
+	  			ctx.beginPath();
+					ctx.arc(this.x + Level.x + 60 + (-30 * Math.cos(this.angle)),
+							this.y + Level.y + 90 + (20 * Math.sin(this.angle)), this.rad, 0, 2 * Math.PI, false);
+				ctx.stroke();
+				ctx.fillStyle = 'rgba(33, 70, 232, 0.8)';
+	  			ctx.fill();
+
+	  			ctx.beginPath();
+					ctx.arc(this.x + Level.x + 60 + (20 * Math.cos(this.angle)),
+							this.y + Level.y + 90 + (-30 * Math.sin(this.angle)), this.rad, 0, 2 * Math.PI, false);
+				ctx.stroke();
+				ctx.fillStyle = 'rgba(33, 232, 46, 0.8)';
+	  			ctx.fill();
+			ctx.restore();
+			this.angle += 0.1;
+		}
 		this.spr.draw(this.x, this.y);
 	}
 	BuckFight.prototype.step = function() {
+		if (this.alive === 1) {
+			if (this.y <= -20 && this.y >= -40 && this.dy > 0) {
+				this.y = -20;
+				this.dy = 0;
+				this.dx = 0;
+				this.spr = new Sprite(Assets.sprites.buckMeditate, 120, 1500);
+				this.alive = 2;
+				this.rad = 0;
+			} else {
+				this.dy += 1;
+				this.x += this.dx;
+				this.y += this.dy;
+			}
+		} else if (this.alive === 2) {
+			if (this.rad < 100) {
+				this.rad += 0.5
+			} else {
+				gameObjs.death = new Death("sucess");
+				this.alive = 3;
+				this.lDy = 0.01;
+			}
+			gameObjs.death = new Death("sucess");
+		} else if (this.alive === 3) {
+			this.lDy += 0.01 + ((this.lDy) / 500);
+			Level.y += this.lDy;
+		}
+
 		this.timer += 1;
 		if (this.timer === 100) {
 			this.x += 86;
@@ -758,8 +845,14 @@ function BuckFight(xIn, yIn, sprIn) {
 			}
 		}
 	}
+	BuckFight.prototype.revive = function() {
+		this.dy = -25;
+		this.dx = 5;
+		this.alive = 1;
+	}
 
-function Death() {
+function Death(state) {
+	this.state = state;
 	this.timer = 0;
 	this.fade = -0.5;
 	this.credit1 = new Sprite(Assets.bgs.credits1, 685, 0);
@@ -777,15 +870,19 @@ function Death() {
 			ctx.save();
 				ctx.globalAlpha = 1 - ((this.timer - 1100) / 100);
 				ctx.fillRect(-1, -1, 1300, 700);
-				gameObjs.buck2.draw();
-				gameObjs.shawn2.draw();
+				if (this.state === "fail") {
+					gameObjs.buck2.draw();
+					gameObjs.shawn2.draw();
+				}
 				this.credit5.draw(-Level.x + 280, -Level.y + 80);
 			ctx.restore();
 		} else {
 			ctx.fillStyle = "rgba(0, 0, 0, " + this.fade + ")";
-			ctx.fillRect(-1, -1, 1300, 700);
-			gameObjs.buck.draw();
-			gameObjs.shawn.draw();
+			if (this.state === "fail") {
+				ctx.fillRect(-1, -1, 1300, 700);
+				gameObjs.buck.draw();
+				gameObjs.shawn.draw();
+			}
 			if (this.timer === 1100) {
 				var bt = gameObjs.buck;
 				var st = gameObjs.shawn;
@@ -799,51 +896,51 @@ function Death() {
 				gameObjs.shawn2.y = -Level.y + 472;
 				gameObjs.buck2.draw();
 				gameObjs.shawn2.draw();
-				this.credit5.draw(-Level.x + 280, -80);
+				this.credit5.draw(-Level.x + 280, -Level.y + 80);
 			} else if (this.timer > 1000) {
 				ctx.save();
 					ctx.globalAlpha = (this.timer - 1000) / 100;
-					this.credit5.draw(-Level.x + 280, -80);
+					this.credit5.draw(-Level.x + 280, -Level.y + 80);
 				ctx.restore();
 			} else if (this.timer > 900) {
 				ctx.save();
 					ctx.globalAlpha = 1 - ((this.timer - 900) / 100);
-					this.credit4.draw(-Level.x + 320, -30);
+					this.credit4.draw(-Level.x + 320, -Level.y + 130);
 				ctx.restore();
 			} else if (this.timer > 800) {
 				ctx.save();
 					ctx.globalAlpha = (this.timer - 800) / 100;
-					this.credit4.draw(-Level.x + 320, -30);
+					this.credit4.draw(-Level.x + 320, -Level.y + 130);
 				ctx.restore();
 			} else if (this.timer > 700) {
 				ctx.save();
 					ctx.globalAlpha = 1 - ((this.timer - 700) / 100);
-					this.credit3.draw(-Level.x + 320, 50);
+					this.credit3.draw(-Level.x + 320, -Level.y + 210);
 				ctx.restore();
 			} else if (this.timer > 600) {
 				ctx.save();
 					ctx.globalAlpha = (this.timer - 600) / 100;
-					this.credit3.draw(-Level.x + 320, 50);
+					this.credit3.draw(-Level.x + 320, -Level.y + 210);
 				ctx.restore();
 			} else if (this.timer > 500) {
 				ctx.save();
 					ctx.globalAlpha = 1 - ((this.timer - 500) / 100);
-					this.credit2.draw(-Level.x + 320, 50);
+					this.credit2.draw(-Level.x + 320, -Level.y + 210);
 				ctx.restore();
 			} else if (this.timer > 400) {
 				ctx.save();
 					ctx.globalAlpha = (this.timer - 400) / 100;
-					this.credit2.draw(-Level.x + 320, 50);
+					this.credit2.draw(-Level.x + 320,  -Level.y + 210);
 				ctx.restore();
 			} else if (this.timer > 300) {
 				ctx.save();
 					ctx.globalAlpha = 1 - ((this.timer - 300) / 100);
-					this.credit1.draw(-Level.x + 320, 50);
+					this.credit1.draw(-Level.x + 320, -Level.y + 210);
 				ctx.restore();
 			} else if (this.timer > 200) {
 				ctx.save();
 					ctx.globalAlpha = (this.timer - 200) / 100;
-					this.credit1.draw(-Level.x + 320, 50);
+					this.credit1.draw(-Level.x + 320, -Level.y + 210);
 				ctx.restore();
 			}
 		}
@@ -856,15 +953,21 @@ function Death() {
 function Mash() {
 	this.sprLR = new Sprite(Assets.sprites.mashlr, 300, 200, false);
 	this.sprUD = new Sprite(Assets.sprites.mashud, 300, 200, false);
+	this.sprALL = new Sprite(Assets.sprites.mashall, 552, 200, false);
 	this.spr = false;
 	this.col = null;
 	this.left = true;
 	this.up = true;
 	this.count = 0;
+	this.startingG = gameObjs.gemBar.green;
+	this.startingB = gameObjs.gemBar.blue
+	this.startingR = gameObjs.gemBar.red;
 }
 	Mash.prototype.draw = function() {
-		if (this.col) {
-			this.spr.draw(-Level.x + 500, -100);
+		if (this.col === "red") {
+			this.spr.draw(-Level.x + 366, -38);
+		} else if (this.col != null) {
+			this.spr.draw(-Level.x + 486, -38);
 		}
 	}
 	Mash.prototype.step = function() {
@@ -873,9 +976,9 @@ function Mash() {
 				if (kb.left && this.left) {
 					this.left = false;
 					gameObjs.flyGems.push(new FlyGem("green"));
-				} else if (!kb.left && !this.left) {
+				} else if (kb.right && !this.left) {
 					this.left = true;
-					this.count += 1;
+					this.count += this.startingG;
 					gameObjs.flyGems.push(new FlyGem("green"));
 				}
 				break;
@@ -883,19 +986,26 @@ function Mash() {
 				if (kb.up && this.up) {
 					this.up = false;
 					gameObjs.flyGems.push(new FlyGem("blue"));
-				} else if (!kb.up && !this.up) {
+				} else if (kb.down && !this.up) {
 					this.up = true;
-					this.count += 1;
+					this.count += this.startingB;
 					gameObjs.flyGems.push(new FlyGem("blue"));
 				}
 				break;
 			case "red":
-				if (kb.left && this.left) {
+				if (kb.left && this.left && this.up) {
 					this.left = false;
 					gameObjs.flyGems.push(new FlyGem("red"));
-				} else if (!kb.left && !this.left) {
+				} else if (kb.up && !this.left && this.up) {
+					this.up = false;
+					this.count += this.startingR;;
+					gameObjs.flyGems.push(new FlyGem("red"));
+				} else if (kb.right && !this.left && !this.up) {
 					this.left = true;
-					this.count += 1;
+					gameObjs.flyGems.push(new FlyGem("red"));
+				} else if (kb.down && this.left && !this.up) {
+					this.up = true;
+					this.count += this.startingR;
 					gameObjs.flyGems.push(new FlyGem("red"));
 				}
 				break;
@@ -911,12 +1021,13 @@ function Mash() {
 				this.spr = this.sprUD;
 				break;
 			case "red":
-				this.spr = this.sprLR;
+				this.spr = this.sprALL;
 				break;
 		}
 	}
 	Mash.prototype.stop = function() {
-		if (this.count > 10) {
+		console.log(this.count);
+		if (this.count > 100) {
 			switch (this.col) {
 				case "green":
 						gameObjs.bossGreen.Die();
@@ -931,7 +1042,7 @@ function Mash() {
 		} else {
 			gameObjs.buck.y += 80;
 			gameObjs.buck.setSprite(new Sprite(Assets.sprites.buckEnd, 152, 0, false));
-			gameObjs.death = new Death();
+			gameObjs.death = new Death("fail");
 		}
 		this.col = null;
 		this.count = 0;
@@ -998,6 +1109,8 @@ function ShawnDead(xIn, yIn, sprIn, xHIn, yHIn, sprHIn) {
 	this.yH = yHIn;
 	this.spr = new Sprite(Assets.sprites.shawnDead, 124, 0);
 	this.hatSpr = sprHIn;
+	this.alive = 0;
+	this.timer = 0;
 }
 	ShawnDead.prototype.draw = function() {
 		this.spr.draw(this.x, this.y);
@@ -1008,7 +1121,29 @@ function ShawnDead(xIn, yIn, sprIn, xHIn, yHIn, sprHIn) {
 		ctx.restore();
 	}
 	ShawnDead.prototype.step = function() {
-		
+		if (this.alive === 1) {
+			(this.timer === 100) ? this.alive = 2 : this.timer += 1;
+		} else if (this.alive === 2) {
+			this.spr = new Sprite(Assets.sprites.shawnJumpR, 120),
+			this.y -= 70;
+			this.dy = -20;
+			this.alive = 3;
+		} else if (this.alive === 3) {
+			if (this.y + this.dy >= 240) {
+				this.dy = 0;
+				this.y = 240;
+				this.spr = new Sprite(Assets.sprites.shawnStandR, 120);
+				gameObjs.buck.revive();
+				this.alive = 4;
+			} else {
+				this.dy += 1;
+				this.y += this.dy;
+			}
+		}
+	}
+	ShawnDead.prototype.revive = function() {
+		gameObjs.buck.spr.togglePause();
+		this.alive = 1;
 	}
 
 function Boss(col, x, y) {
@@ -1039,6 +1174,7 @@ function Boss(col, x, y) {
 	this.dx = 0;
 	this.attack = 0;
 	this.bounce = 0;
+	this.timer = 0;
 }
 	Boss.prototype.draw = function() {
 		if(this.flip) {
@@ -1096,7 +1232,7 @@ function Boss(col, x, y) {
 				}
 				break;
 			case 5:
-				if (this.x > gameObjs.buck.x + 200) {
+				if (this.x > gameObjs.buck.x + 100) {
 					this.dx -= 3;
 					this.dy += 1;
 				} else {
@@ -1107,9 +1243,32 @@ function Boss(col, x, y) {
 					this.setSprite(this.attackSpr);
 					gameObjs.mash.attack(this.col);
 					gameObjs.buck.spr = gameObjs.buck.cowarSpr;
-					this.attack = 2;
+					this.attack = 6;
 				}
 				break;
+			case 6:
+				this.bounce += 1;
+				this.x += Math.sin(this.bounce) * 5;
+				break;
+			case 7:
+				this.setSprite(this.attackSpr);
+				gameObjs.buck.spr = gameObjs.buck.cowarSpr;
+				this.bounce = 0;
+				this.attack = 8;
+				this.up = 8;
+				gameObjs.bullets = [];
+				break;
+			case 8:
+				this.timer += 1;
+				this.timer %= 3;
+				if (this.timer === 0) {
+					if (Math.abs(this.bounce) >= 10) {
+						this.up *= -1;
+					}
+					this.bounce += this.up;
+					gameObjs.bullets.push(new Bullet(this.x + 30, this.y + 84, "final", this.bounce));
+				}
+
 		}
 		this.y += this.dy;
 		this.x += this.dx;
@@ -1120,14 +1279,23 @@ function Boss(col, x, y) {
 			this.dy = -17;
 		} else if (this.col === "blue") {
 			this.attack = 5;
-			this.dy = -12; 
+			this.dy = -11; 
+		} else {
+			this.attack = 7;
+			gameObjs.mash.attack(this.col);
 		}
 	}
 	Boss.prototype.Die = function() {
-		this.setSprite(this.restSpr);
-		this.flip = true;
-		this.dy = 20;
-		this.attack = 4;
+		gameObjs.buck.spr = gameObjs.buck.restSpr;
+		if (this.col === "red") {
+			this.setSprite(new Sprite(Assets.sprites.finalDeath, 180, 1000, function() {gameObjs.shawn.revive(); delete gameObjs.bossRed}, false));
+			this.attack = 10;
+		} else {
+			this.setSprite(this.restSpr);
+			this.flip = true;
+			this.dy = 20;
+			this.attack = 4;
+		}
 	}
 
 function BigGem(xIn, yIn, colour) {
@@ -1259,6 +1427,17 @@ function HitGem(xIn, yIn, colour) {
 	}
 
 function BadGem(xIn, yIn, dyIn) {
+	if (dyIn > 0) {
+		this.snd = new Audio();
+		if (this.x < 400) {
+			this.snd.src = Assets.sounds.firel.src;
+		} else if (this.x > 800) {
+			this.snd.src = Assets.sounds.firer.src;
+		} else {
+			this.snd.src = Assets.sounds.firec.src;
+		}
+		this.snd.volume = 0.1;
+	}
 	this.x = xIn;
 	this.y = yIn;
 	this.dy = (dyIn) ? dyIn : 0;
@@ -1282,17 +1461,8 @@ function BadGem(xIn, yIn, dyIn) {
 		}
 
 		if (this.dy !== 0 && this.sound === false && gameObjs.buck.y - this.y < 300) {
-				if (this.x < 400) {
-					Assets.sounds.firel.volume = 1;
-					Assets.sounds.firel.play();
-				} else if (this.x > 800) {
-					Assets.sounds.firer.volume = 1;
-					Assets.sounds.firer.play();
-				} else {
-					Assets.sounds.firec.volume = 1;
-					Assets.sounds.firec.play();
-				}
-				this.sound = true;
+			this.snd.play();
+			this.sound = true;
 		}
 
 		if (-Level.y + 700 < this.y) {
@@ -1309,10 +1479,15 @@ function GemBar() {
 }
 	GemBar.prototype.draw = function() {
 		ctx.save();
-		if (this.final) {			
-			ctx.scale(1 + (0.5 * this.sf), 1 + (0.5 * this.sf));
-			(this.sf < 1) ? this.sf += 0.05 : this.sf = 1;
+		if (this.final) {	
+			if (gameObjs.buck.rad === 0) {		
+				ctx.scale(1 + (0.5 * this.sf), 1 + (0.5 * this.sf));
+				(this.sf < 1) ? this.sf += 0.05 : this.sf = 1;
+			} else {
+				ctx.globalAlpha = 1 - (gameObjs.buck.rad / 100);
+			}
 		}
+
 		if (this.red + this.blue + this.green > -2) {
 			ctx.beginPath();
 				ctx.arc(68, 58, 30, 0, 2 * Math.PI, false);
@@ -1425,6 +1600,8 @@ function Monk(colIn) {
 				this.shootSpr = new Sprite(Assets.sprites.bossGreenShoot, sw, 400, function() { gameObjs.monkG.setSprite(gameObjs.monkG.restSpr); });
 				this.shootTime = function() { this.rate = 20 + Math.round(100 * Math.random()); }
 				this.shootFunc = function() {
+					Assets.sounds.gShoot.volume = 0.2;
+					Assets.sounds.gShoot.play();
 					this.greenFire += 1;
 					if (this.greenFire === 1) {
 						this.setSprite(this.shootSpr);
@@ -1449,6 +1626,8 @@ function Monk(colIn) {
 			this.blueFire = 0;
 			this.shootTime = function() { this.rate = 50 + Math.round(100 * Math.random()); }
 			this.shootFunc = function() {
+				Assets.sounds.bShoot.volume = 0.1;
+				Assets.sounds.bShoot.play();
 				this.blueFire += 1;
 				this.blueFire %= 50;
 				if (this.blueFire === 0) {
@@ -1473,6 +1652,8 @@ function Monk(colIn) {
 			this.shootSpr = new Sprite(Assets.sprites.bossRedShoot, sw, 400, function() { gameObjs.monkR.setSprite(gameObjs.monkR.restSpr); });
 			this.shootTime = function() { this.rate = 50 + Math.round(100 * Math.random()); }
 			this.shootFunc = function() {
+				Assets.sounds.rShoot.volume = 0.1;
+				Assets.sounds.rShoot.play();
 				gameObjs.bullets.push(new Bullet(this.x - 5, this.y + 209, "red"));
 				gameObjs.bullets.push(new Bullet(this.x - 5, this.y + 209, "red"));
 				this.setSprite(this.shootSpr);
@@ -1509,6 +1690,9 @@ function Monk(colIn) {
 		} else {
 			this.x -= 15;
 			this.y += ((gameObjs.buck.y - this.y) / 16);
+			Assets.sounds.aShoot.volume = 0.2;
+			Assets.sounds.aShoot.play();
+			Assets.sounds.space.pause();
 			if (this.x < gameObjs.buck.x && this.col === "green") {
 				gameObjs.buck = new BuckDead(gameObjs.buck.x, gameObjs.buck.y, gameObjs.buck.dx, gameObjs.buck.dy);
 			}
@@ -1518,7 +1702,7 @@ function Monk(colIn) {
 		}
 	}
 
-function Bullet(xIn, yIn, col) {
+function Bullet(xIn, yIn, col, ang) {
 	this.x = xIn;
 	this.y = yIn;
 
@@ -1528,12 +1712,14 @@ function Bullet(xIn, yIn, col) {
 			this.w = 15;
 			this.l = 0;
 			this.dx = 20;
+			this.dy = 0;
 			break;
 		case "blue":
 			this.col = "#2146E8";
 			this.w = 7;
 			this.l = 10;
 			this.dx = 20;
+			this.dy = 0;
 			break;
 		case "red":
 			this.col = "#E82E21";
@@ -1541,6 +1727,13 @@ function Bullet(xIn, yIn, col) {
 			this.l = 25;
 			this.dx = 8;
 			this.dy = Math.random() * 62;
+			break;
+		case "final":
+			this.col = "#FF5200";
+			this.w = 15;
+			this.l = 0;
+			this.dx = 30;
+			this.dy = ang;
 			break;
 	}
 }
@@ -1557,10 +1750,11 @@ function Bullet(xIn, yIn, col) {
 	}
 	Bullet.prototype.step = function() {
 		this.x -= this.dx;
-
 		if (this.col === "#E82E21") {
 			this.dy += 1;
 			this.y += Math.sin(this.dy / 10) * 15;
+		} else {
+			this.y += this.dy;
 		}
 
 		if (this.x < -Level.x) {
@@ -1570,7 +1764,10 @@ function Bullet(xIn, yIn, col) {
 		//Collision with Buck
 		if (gameObjs.buck.x + gameObjs.buck.edge.left < this.x + 100 && gameObjs.buck.x + gameObjs.buck.edge.right > this.x - 100 &&
 			gameObjs.buck.y + gameObjs.buck.edge.top  < this.y && gameObjs.buck.y + gameObjs.buck.edge.bottom > this.y + 10 ) {
-				gameObjs.buck.hit(1);
+				if (this.col !== "#FF5200") {
+					gameObjs.buck.hit(1);
+				}
+				deleteObject(this);
 		}
 	}
 

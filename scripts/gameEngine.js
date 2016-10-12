@@ -289,9 +289,11 @@ var Assets = {
 		bossFinalRed : "sprites/finalRed.png",
 		attackGreen : "sprites/attackGreen.png",
 		attackBlue : "sprites/attackBlue.png",
-		attackRed : "sprites/finalRed.png",
+		attackRed : "sprites/attackRed.png",
+		finalDeath : "sprites/finalDeath.png",
 		mashlr : "sprites/mashlr.png",
-		mashud : "sprites/mashud.png"
+		mashud : "sprites/mashud.png",
+		mashall : "sprites/mashall.png"
 	},
 	bgs : {
 		partOneBg : "backgrounds/lvlOneBg.png",
@@ -328,10 +330,18 @@ var Assets = {
 		firer: "sounds/flight/fireright.mp3",
 		whalel: "sounds/flight/whalel.mp3",
 		whaler: "sounds/flight/whaler.mp3",
-		fowardfly: "sounds/flight/foward.wav",
-		rightfly: "sounds/flight/Flutter2.wav",
-		leftfly: "sounds/flight/Flutter1.wav",
-		flightLoop: "sounds/flight/flightLoop.mp3"
+		fowardfly: "sounds/flight/foward.mp3",
+		rightfly: "sounds/flight/flutter2.mp3",
+		leftfly: "sounds/flight/flutter1.mp3",
+		flightLoop: "sounds/flight/flightLoop.mp3",
+		hTurn : "sounds/flight/hTurn.mp3",
+		gShoot : "sounds/monkey/Green.mp3",
+		bShoot : "sounds/monkey/Blue.mp3",
+		rShoot : "sounds/monkey/Red.mp3",
+		aShoot : "sounds/monkey/all.mp3",
+		falling : "sounds/flight/falling.wav",
+		thump : "sounds/flight/Landing.mp3",
+		space : "sounds/flight/space.mp3"
 	}
 };
 
@@ -400,7 +410,7 @@ function loadingScreen() {
 			ctx.arc(625, 295, 140, (-Math.PI / 2), (-Math.PI / 2) + ((Math.PI * 2) * (1 - (loading / 90))), false);
 		ctx.stroke();
 		ctx.font = "20pt Monospace";
-		ctx.fillText("SHIFT for Fullscreen", 600, 700);
+		ctx.fillText("SHIFT for Fullscreen", 490, 500);
 		(loading > 0) ? loadfade = 1 : loadfade -= 0.05;
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
