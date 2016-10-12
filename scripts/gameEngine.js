@@ -341,7 +341,7 @@ var Assets = {
 		aShoot : "sounds/monkey/all.mp3",
 		falling : "sounds/flight/falling.wav",
 		thump : "sounds/flight/Landing.mp3",
-		space : "sounds/flight/space.mp3"
+		space : "sounds/flight/Space.mp3"
 	}
 };
 
