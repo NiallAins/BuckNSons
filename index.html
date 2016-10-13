@@ -21,10 +21,37 @@
 			border-radius: 1.5vw;
 			cursor: none;
 		}
+		#buttons {
+			opacity: 0;
+			pointer-events: none;
+			width: 1100px;
+			padding-top: 350px;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+		#buttons img {
+			opacity: 0.4;
+		}
+		#buttons img:hover {
+			opacity: 1;
+		}
+		#btn1 {
+			float: right;
+		}
+		#btn2 {
+			float: left;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
 	<canvas id="mainCanvas" width="1280" height="640"></canvas>
+	<div id="buttons">
+		<a href="https://www.youtube.com/watch?v=pvQJU-ANQqU"><img id="btn1" src="sprites/btnVid.png" /></a>
+		<img id="btn2" src="sprites/btnPlay.png" onclick="gameObjs.death.replay()" />
+	</div>
 
 	<script src="scripts/gameObjects.js"></script>
 	<script src="scripts/gameLevels.js"></script>

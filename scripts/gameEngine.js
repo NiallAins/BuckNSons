@@ -293,7 +293,9 @@ var Assets = {
 		finalDeath : "sprites/finaldeath.png",
 		mashlr : "sprites/mashlr.png",
 		mashud : "sprites/mashud.png",
-		mashall : "sprites/mashall.png"
+		mashall : "sprites/mashall.png",
+		shawnFinal : "sprites/shwanFinal.png",
+		buckFinal : "sprites/buckFinal.png"
 	},
 	bgs : {
 		partOneBg : "backgrounds/lvlOneBg.png",
@@ -321,6 +323,7 @@ var Assets = {
 		step1: "sounds/intro/step1.mp3",
 		step2: "sounds/intro/step2.mp3",
 		step3: "sounds/intro/step3.mp3",
+		conJump : "sounds/flight/conJump.mp3",
 		jump: "sounds/intro/jump.wav",
 		land: "sounds/intro/land.wav",
 		takeoff: "sounds/intro/takeoff.mp3",
@@ -341,7 +344,14 @@ var Assets = {
 		aShoot : "sounds/monkey/all.mp3",
 		falling : "sounds/flight/falling.wav",
 		thump : "sounds/flight/Landing.mp3",
-		space : "sounds/flight/Space.mp3"
+		space : "sounds/flight/Space.mp3",
+		mashl : "sounds/combat/left.wav",
+		mashr : "sounds/combat/right.wav",
+		gDeath : "sounds/combat/gDeath.mp3",
+		bDeath : "sounds/combat/bDeath.mp3",
+		rDeath : "sounds/combat/rDeath.mp3",
+		fight : "sounds/combat/Fight.mp3",
+		lose : "sounds/combat/lose.mp3"
 	}
 };
 
@@ -415,7 +425,7 @@ function loadingScreen() {
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
 	} else {
-		Level.load.partOne();
+		Level.load.test();
 		mainLoop();
 	}
 }
@@ -472,17 +482,6 @@ function mainLoop() {
 			ctx.drawImage(Level.bgs[i].src, (Level.x + Level.bgs[i].x) * Level.bgs[i].plX, (Level.y + Level.bgs[i].y) * Level.bgs[i].plY);
 		}
 	}
-
-	//DEBUG
-	/*ctx.strokeStyle = "blue";
-	ctx.lineWidth = 10;
-	ctx.lineCap = "round";
-	ctx.beginPath();
-	for (var i = 0; i < Level.boundarys.length; i += 1) {
-		ctx.moveTo(Level.boundarys[i].x0, Level.boundarys[i].y0 + 5);
-		ctx.lineTo(Level.boundarys[i].x1, Level.boundarys[i].y1 + 5);
-	}
-	ctx.stroke();*/
 
 	//Reset Keyboard listener
 	kb.press = null;

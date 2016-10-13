@@ -56,11 +56,10 @@ var Level = {
 			gameObjs.gemBar.red = 10;
 			gameObjs.gemBar.blue = 10;
 			gameObjs.gemBar.green = 10;
-			Level.y = 14000;
+			Level.y = 16000;
+			Level.x = -11681;
 			gameObjs.buck  = new BuckFly( -Level.x + 350, 402, new Sprite(Assets.sprites.buckDead));
 			gameObjs.gems = [];
-
-			Level.load.partTwo();
 		},
 
 		partOne : function() {
@@ -234,6 +233,32 @@ var Level = {
 			gameObjs.monkG = new Monk("green");
 			gameObjs.monkB = new Monk("blue");
 			gameObjs.monkR = new Monk("red");
+
+			gameObjs.gems = [
+				new BadGem(3000, -15490),
+				new BadGem(4000, -16050),
+				new BadGem(5000, -15490),
+				new BadGem(6000, -16050),
+				new BadGem(7000, -15490),
+				new BadGem(8000, -16050),
+				new BadGem(9000, -15490),
+				new BadGem(10000, -16050),
+				new Gem(2000, -16100, "green", true),
+				new Gem(2000, -16100, "blue", true),
+				new Gem(2000, -16100, "red", true),
+				new Gem(4000, -16100, "green", true),
+				new Gem(4000, -16100, "blue", true),
+				new Gem(4000, -16100, "red", true),
+				new Gem(6000, -16100, "green", true),
+				new Gem(6000, -16100, "blue", true),
+				new Gem(6000, -16100, "red", true),
+				new Gem(8000, -16100, "green", true),
+				new Gem(8000, -16100, "blue", true),
+				new Gem(8000, -16100, "red", true),
+				new Gem(10000, -16100, "green", true),
+				new Gem(10000, -16100, "blue", true),
+				new Gem(10000, -16100, "red", true)
+			];
 		}
 	}
 }
