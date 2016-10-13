@@ -425,7 +425,7 @@ function loadingScreen() {
 		ctx.restore();
 		window.requestAnimationFrame(loadingScreen);
 	} else {
-		Level.load.test();
+		Level.load.partOne();
 		mainLoop();
 	}
 }
