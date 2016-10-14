@@ -1,3 +1,12 @@
+<!--
+	All content created by Niall Ainsworth for "Buckles N' Son."
+	and owned by Niall Ainsworth.
+
+	Contact: niallainsworth@gmail.com
+
+	Party on Garth.
+-->
+
 <html>
 <head>
 	<style>
@@ -47,15 +56,14 @@
 	</style>
 </head>
 <body>
-	<canvas id="mainCanvas" width="1280" height="640"></canvas>
-	<div id="buttons">
-		<a href="https://www.youtube.com/watch?v=pvQJU-ANQqU"><img id="btn1" src="sprites/btnVid.png" /></a>
-		<img id="btn2" src="sprites/btnPlay.png" onclick="gameObjs.death.replay()" />
+	<div id="fullscreen">
+		<canvas id="mainCanvas" width="1280" height="640"></canvas>
+		<div id="buttons">
+			<a href="https://www.youtube.com/watch?v=pvQJU-ANQqU"><img id="btn1" src="sprites/btnVid.png" /></a>
+			<img id="btn2" src="sprites/btnPlay.png" onclick="gameObjs.death.replay()" />
+		</div>
 	</div>
 
-	<script src="scripts/gameObjects.js"></script>
-	<script src="scripts/gameLevels.js"></script>
-	<script src="scripts/gameEngine.js"></script>
-
+	<script src="scripts/game.min.js"></script>
 </body>
 </html>
