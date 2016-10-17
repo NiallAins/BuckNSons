@@ -272,7 +272,7 @@ function BuckFly(xIn, yIn) {
 	Assets.sounds.soundtrack.play();
 	Assets.sounds.leftfly.volume = 0.1;
 	Assets.sounds.fowardfly.volume = 0.8;
-	Assets.sounds.rightfly.volume = 0.1;
+	Assets.sounds.rightfly.volume = 0.05;
 
 	this.timer = 0;
 }
@@ -507,7 +507,7 @@ function BuckSwim(xIn, yIn) {
 	this.y = yIn;
 	this.setSprite = setSprite;
 
-	Assets.sounds.hTurn.volume = 1;
+	Assets.sounds.hTurn.volume = 0.3;
 	Assets.sounds.hTurn.play();
 	Assets.sounds.space.volume = 0.2;
 	Assets.sounds.space.loop = true;
@@ -607,16 +607,28 @@ function BuckSwim(xIn, yIn) {
 			Assets.sounds.gemHit.load();
 			Assets.sounds.gemHit.play();
 			this.injured = 100;
-			//Sprout gems
+			//Sprout gems & reduce score
 			for (var i = 0; i < damage; i += 1) {
-				if (gameObjs.gemBar.green > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "green"));
-				if (gameObjs.gemBar.blue  > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "blue"));
-				if (gameObjs.gemBar.red   > 1) gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "red"));
+
+				if (gameObjs.gemBar.green > 0) {
+					gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "green"));
+					gameObjs.gemBar.green -= 1;
+					gameObjs.gemBar.totalGreen += 1;
+					gameObjs.gemBar.totalLost += 1;
+				}
+				if (gameObjs.gemBar.blue  > 0) {
+					gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "blue"));
+					gameObjs.gemBar.blue -= 1;
+					gameObjs.gemBar.totalBlue += 1;
+					gameObjs.gemBar.totalLost += 1;
+				}
+				if (gameObjs.gemBar.red   > 0) {
+					gameObjs.gems.push(new HitGem(this.x + 90, this.y + 100, "red"));
+					gameObjs.gemBar.red -= 1;
+					gameObjs.gemBar.totalRed += 1;
+					gameObjs.gemBar.totalLost += 1;
+				}
 			}
-			//Reduce score
-			gameObjs.gemBar.green = gameObjs.gemBar.green > damage ? gameObjs.gemBar.green - damage : 1;
-			gameObjs.gemBar.blue = gameObjs.gemBar.blue > damage ? gameObjs.gemBar.blue - damage : 1;
-			gameObjs.gemBar.red = gameObjs.gemBar.red > damage ? gameObjs.gemBar.red - damage : 1;
 		}
 	}
 
@@ -1595,15 +1607,14 @@ function GemBar() {
 	GemBar.prototype.draw = function() {
 		ctx.save();
 		if (this.final) {	
-			if (gameObjs.buck.rad === 0) {		
-				ctx.scale(1 + (0.5 * this.sf), 1 + (0.5 * this.sf));
-				(this.sf < 1) ? this.sf += 0.05 : this.sf = 1;
-			} else {
+			ctx.scale(1 + (0.5 * this.sf), 1 + (0.5 * this.sf));
+			(this.sf < 1) ? this.sf += 0.05 : this.sf = 1;
+			if (gameObjs.buck.rad !== 0) {
 				ctx.globalAlpha = 1 - (gameObjs.buck.rad / 100);
 			}
 		}
 
-		if (this.red + this.blue + this.green > -2) {
+		if (this.red > -1 || this.blue  > -1 || this.green > -1) {
 			ctx.beginPath();
 				ctx.arc(68, 58, 30, 0, 2 * Math.PI, false);
 				ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
@@ -1651,15 +1662,15 @@ function GemBar() {
 
 			ctx.fillText("+", 530, 250);
 			this.spr.green.draw(-Level.x + 570, -Level.y + 215);
-			ctx.fillText(Math.floor((this.totalGreen * 100) / 30) + "%", 700, 250);
+			ctx.fillText(Math.floor((this.totalGreen * 100) / 31) + "%", 700, 250);
 
 			ctx.fillText("+", 530, 325);
 			this.spr.blue.draw(-Level.x + 570, -Level.y + 290);
-			ctx.fillText(Math.floor((this.totalBlue * 100) / 30) + "%", 700, 325);
+			ctx.fillText(Math.floor((this.totalBlue * 100) / 31) + "%", 700, 325);
 
 			ctx.fillText("+", 530, 400);
 			this.spr.red.draw(-Level.x + 570, -Level.y + 365);
-			ctx.fillText(Math.floor((this.totalRed * 100) / 25) + "%", 700, 400);
+			ctx.fillText(Math.floor((this.totalRed * 100) / 26) + "%", 700, 400);
 
 			ctx.fillText("-", 530, 475);
 			this.spr.gray.draw(-Level.x + 570, -Level.y + 440);
