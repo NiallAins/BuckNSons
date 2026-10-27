@@ -61,7 +61,13 @@ var Level = {
 		},
 
 		partTwo : function() {
-			document.getElementById('controls').classList.add('active');
+			if (
+				('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0)
+			) {
+			    document.getElementById('controls').classList.add('active');
+			}
 			
 			gameObjs.shawn = new Shawn(200, -200);
 			gameObjs.gems = [
