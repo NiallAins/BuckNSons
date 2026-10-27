@@ -44,70 +44,86 @@ a {
     cursor: pointer;
 }
 
-#controls button {
-    --w-button: 100px;
-    --w-button-gap: 16px;
-    pointer-events: none;
-    opacity: 0;
+
+/*
+/* Mobile mobiles
+*/
+
+.mobile {
+    --w-button: 70px;
+    --w-button-mar: 16px;
+    --w-button-gap: 60px;
+
+    position: fixed;
+    z-index: 100;
     transition:
         opacity 2s,
         border-color 1s;
 }
-#controls button {
-    position: fixed;
-    z-index: 100;
-    width: 100px;
-    height: 100px;
-    background: none;
+
+.mobile__fullscreen {
+    top: var(--w-button-mar);
+    left: var(--w-button-mar);
+    width: calc(var(--w-button) * 0.5);
+    height: calc(var(--w-button) * 0.5);
+    border: none;
+    background-color: #0000;
+    background-size: contain;
+    background-image: url("./fullscreen.svg");
+    opacity: 0.75;
+}
+
+.mobile__fullscreen.touched {
+    opacity: 0.25;
+}
+
+.mobile__arrow {
+    width: var(--w-button);
+    height: var(--w-button);
     border: 2px solid #ffff;
     border-radius: 10%;
+    /* opacity: 0;
+    pointer-events: none; */
+    background: none;
 }
-#controls #controlFull {
-    top: var(--w-button-gap);
-    left: var(--w-button-gap);
-    opacity: 1;
+
+.mobile__arrow::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--w-button) * 0.3);
+    border: solid #fff;
+    border-width: 4px 4px 0 0;
+    border-top-right-radius: 4px;
+    rotate: 45deg;
+    transform-origin: 40% 30%;
+}
+
+.mobile__arrow.active {
+    opacity: 0.75;
     pointer-events: all;
-    color: white;
-    height: auto;
-    padding: 8px;
 }
-#controls #controlFull::after {
-    content: unset;
+
+.mobile__arrow.touched {
+    opacity: 0.25;
+    border-color: #fff0;
 }
-    #controls.active button {
-        opacity: 1;
-        pointer-events: all;
-    }
-    #controls button.touched {
-        opacity: 0.25;
-        border-color: #fff0;
-    }
-    #controls button::after {
-        content: '';
-        position: absolute;
-        inset: calc(var(--w-button) * 0.3);
-        border: solid #fff;
-        border-width: 4px 4px 0 0;
-        border-top-right-radius: 4px;
-        rotate: 45deg;
-        transform-origin: 40% 30%;
-    }
-    #controlLeft {
-        left: var(--w-button-gap);
-        bottom: var(--w-button-gap);
-        rotate: 180deg;
-    }
-    #controlRight {
-        left: calc(var(--w-button) + (var(--w-button-gap) * 2));
-        bottom: var(--w-button-gap);
-    }
-    #controlUp {
-        right: var(--w-button-gap);
-        bottom: calc(var(--w-button) + (var(--w-button-gap) * 2));
-        rotate: -90deg;
-    }
-    #controlDown {
-        right: var(--w-button-gap);
-        bottom: var(--w-button-gap);
-        rotate: 90deg;
-    }
+
+.mobile__arrow-left {
+    left: var(--w-button-mar);
+    bottom: var(--w-button-mar);
+    rotate: 180deg;
+}
+.mobile__arrow-right {
+    left: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
+    bottom: var(--w-button-mar);
+}
+.mobile__arrow-up {
+    right: var(--w-button-mar);
+    bottom: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
+    rotate: -90deg;
+}
+.mobile__arrow-down {
+    right: var(--w-button-mar);
+    bottom: var(--w-button-mar);
+    rotate: 90deg;
+}

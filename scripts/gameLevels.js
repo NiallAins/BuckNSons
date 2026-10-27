@@ -22,6 +22,8 @@ var Level = {
 	//Place objects in level
 	load : {
 		partOne : function() {
+			showMobileFullscreen();
+
 			gameObjs = {};
 
 			//Set level background and view
@@ -61,14 +63,9 @@ var Level = {
 		},
 
 		partTwo : function() {
-			if (
-				('ontouchstart' in window) ||
-                (navigator.maxTouchPoints > 0) ||
-                (navigator.msMaxTouchPoints > 0)
-			) {
-			    document.getElementById('controls').classList.add('active');
-			}
-			
+			showMobileControls();
+			dimMobileFullscreen();
+
 			gameObjs.shawn = new Shawn(200, -200);
 			gameObjs.gems = [
 				new Gem(600, -1000, "green"),
