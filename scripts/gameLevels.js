@@ -21,48 +21,6 @@ var Level = {
 
 	//Place objects in level
 	load : {
-		test : function() {
-			gameObjs = {};
-
-			//Set level background and view
-			Level.x = 0;
-			Level.y = 1200;
-
-			//Stores level backgrounds and foregrounds
-			Level.bgs = [
-				{src : Assets.bgs.partOneBg, z : -1, x: 0, y: -16080, plX : 1, plY : 0.5},
-				{src : Assets.bgs.partOneBg, z : -1, x: 11681, y: -16080, plX : 1, plY : 0.5},
-				{src : Assets.bgs.partTwoBg, z : -1, x: 1280, y: -16069, plX : 1, plY : 0.5},
-				{src : Assets.bgs.partTwoBg, z : -1, x: 8240, y: -16069, plX : 1, plY : 0.5},
-				{src : Assets.bgs.water, z : -1, x: 0, y: 0, plX : 1, plY : 0.6},
-				{src : Assets.bgs.water, z : -1, x: 11681, y: 50, plX : 1, plY : 0.6},
-				{src : Assets.bgs.partOneFg, z : -1, x: 0, y: -30, plX : 1, plY : 0.8},
-				{src : Assets.bgs.platforms, z : -1, x: 0, y: 0, plX : 1, plY : 1},
-				{src : Assets.bgs.partThreeBg, z : -1, x: 11681, y: -131, plX : 1, plY : 1}
-			];
-
-			//Stores level boundarys
-			Level.boundarys = [],
-			Level.addBoundary(
-				//Ground
-				{x0 : -100, y0 : 598, x1 : 1300, y1 : 598},
-				{x0 : -100, y0 : 385, x1 : 130, y1 : 385, type: 'platform'},
-				{x0 : 1150, y0 : 385, x1 : 1300, y1 : 385, type: 'platform'},
-				{x0 : -15, y0 : 1000, x1 : -15, y1 : 0},
-				{x0 : 1300, y0 : 1000, x1 : 1300, y1 : 0}
-			);
-
-			gameObjs.gemBar = new GemBar();
-			gameObjs.gemBar.red = 10;
-			gameObjs.gemBar.blue = 10;
-			gameObjs.gemBar.green = 10;
-			Level.y = 11000;
-			Level.x = 0;
-			gameObjs.buck  = new BuckFly( -Level.x + 350, 402, new Sprite(Assets.sprites.buckDead));
-			gameObjs.gems = [];
-			Level.load.partTwo();
-		},
-
 		partOne : function() {
 			gameObjs = {};
 
@@ -88,8 +46,8 @@ var Level = {
 			Level.addBoundary(
 				//Ground
 				{x0 : -100, y0 : 598, x1 : 1300, y1 : 598},
-				{x0 : -100, y0 : 385, x1 : 130, y1 : 385, type: 'platform'},
-				{x0 : 1150, y0 : 385, x1 : 1300, y1 : 385, type: 'platform'},
+				{x0 : -100, y0 : 385, x1 : 160, y1 : 385, type: 'platform'},
+				{x0 : 1090, y0 : 385, x1 : 1300, y1 : 385, type: 'platform'},
 				{x0 : -15, y0 : 1000, x1 : -15, y1 : 0},
 				{x0 : 1300, y0 : 1000, x1 : 1300, y1 : 0}
 			);
@@ -103,6 +61,8 @@ var Level = {
 		},
 
 		partTwo : function() {
+			document.getElementById('controls').classList.add('active');
+			
 			gameObjs.shawn = new Shawn(200, -200);
 			gameObjs.gems = [
 				new Gem(600, -1000, "green"),

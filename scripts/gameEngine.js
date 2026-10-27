@@ -16,7 +16,7 @@ var kb = {
 	z : false,
 	shift : false,
 	press : null
-} 
+}
 
 window.onkeydown = function(e) {
 	var key = e.keyCode ? e.keyCode : e.which;
@@ -118,6 +118,25 @@ window.onkeyup = function(e) {
        kb.release = "shift";
    	}
 }
+
+const TOUCH_RIGHT = document.getElementById('controlRight');
+TOUCH_RIGHT.ontouchstart = window.onkeydown.bind(this, { keyCode: 39 });
+TOUCH_RIGHT.ontouchend = window.onkeyup.bind(this, { keyCode: 39 });
+const TOUCH_LEFT = document.getElementById('controlLeft');
+TOUCH_LEFT.ontouchstart = window.onkeydown.bind(this, { keyCode: 37 });
+TOUCH_LEFT.ontouchend = window.onkeyup.bind(this, { keyCode: 37 });
+const TOUCH_UP = document.getElementById('controlUp');
+TOUCH_UP.ontouchstart = window.onkeydown.bind(this, { keyCode: 38 });
+TOUCH_UP.ontouchend = window.onkeyup.bind(this, { keyCode: 38 });
+const TOUCH_DOWN = document.getElementById('controlDown');
+TOUCH_DOWN.ontouchstart = window.onkeydown.bind(this, { keyCode: 40 });
+TOUCH_DOWN.ontouchend = window.onkeyup.bind(this, { keyCode: 40 });
+
+const TOUCH_CONTAIN = document.getElementById('controls');
+TOUCH_RIGHT.onclick = TOUCH_LEFT.onclick = TOUCH_UP.onclick = TOUCH_DOWN.onclick = e => e.target.classList.add('touched');
+
+const TOUCH_FULL = document.getElementById('controlFull');
+TOUCH_FULL.onclick = document.getElementById('fullscreen').webkitRequestFullscreen();
 
 
 /********************\
@@ -226,20 +245,6 @@ function moveLvl(dx, dy, abs) {
 /**********************************\
   ENGINE FUNCTIONS & INITALISATION
 \**********************************/
-
-//Canvas Initalization
-var can = document.getElementById('mainCanvas');
-if (window.innerHeight > 1900) {
-	can.style.Width = '1980px';
-	can.style.height = '1080px';
-} else if (window.innerWidth < 1200) {
-	can.style.width = '100vw';
-	can.style.height = '50vw';
-} else {
-	can.style.width = '1280px';
-	can.style.height = '640px';
-}
-var ctx = can.getContext('2d');
 
 //Stores all game objects
 var gameObjs = [];

@@ -55,7 +55,9 @@ function Shawn(xIn, yIn) {
 		this.spr.draw(this.x, this.y);
 	}
 	Shawn.prototype.step = function() {
-		if (!this.paused) {
+		if (this.paused) {
+			return;
+		}
 
 		//Check if on ground
 		this.onGround = false;
@@ -157,8 +159,10 @@ function Shawn(xIn, yIn) {
 			//Slope
 			else {
 				var hPt = this.x + this.edge.mid;
-				var colPt = getCollPoint(bo.x0, bo.y0, bo.x1, bo.y1, hPt + this.hspeed, this.y + this.vspeed,
-										 hPt + this.hspeed, this.y + this.edge.bottom + this.vspeed + this.slopeSnap);
+				var colPt = getCollPoint(
+					bo.x0, bo.y0, bo.x1, bo.y1, hPt + this.hspeed, this.y + this.vspeed,
+					hPt + this.hspeed, this.y + this.edge.bottom + this.vspeed + this.slopeSnap
+				);
 				if (colPt.x !== -1 && (bo.type !== 'platform' || (!this.climb && this.y + this.edge.bottom <= colPt.y + 1 + (this.hspeed * bo.slope)))) {
 					this.y = (colPt.y - (this.hspeed * -bo.slope)) - this.edge.bottom - 1;
 					this.vspeed = (this.hspeed * -bo.slope);
@@ -209,21 +213,21 @@ function Shawn(xIn, yIn) {
 		}
 
 		//Implement Movement
-			this.x += this.hspeed;
-			this.y += this.vspeed;
+		this.x += this.hspeed;
+		this.y += this.vspeed;
 
 		//Set sprites
 		if (this.climb) {
 			this.setSprite(this.sprites.climb);
 		} else if (this.onGround) {
-			this.setSprite((this.hspeed === 0) ?	((this.rightFacing) ? this.sprites.standR : this.sprites.standL) :
-												 	((this.rightFacing) ? this.sprites.runR : this.sprites.runL));
+			this.setSprite((this.hspeed === 0)
+				? ((this.rightFacing) ? this.sprites.standR : this.sprites.standL)
+				: ((this.rightFacing) ? this.sprites.runR : this.sprites.runL));
 		} else {
-			this.setSprite((this.vspeed < 0) ?	((this.rightFacing) ? this.sprites.jumpR : this.sprites.jumpL) :
-												((this.rightFacing) ? this.sprites.fallR : this.sprites.fallL));
+			this.setSprite((this.vspeed < 0)
+				? ((this.rightFacing) ? this.sprites.jumpR : this.sprites.jumpL)
+				: ((this.rightFacing) ? this.sprites.fallR : this.sprites.fallL));
 		}
-
-		} //end Paused
 	}
 	Shawn.prototype.playStep = function() {
 		if (this.footstep === null || this.footstep.ended) {
@@ -1104,7 +1108,6 @@ function Mash() {
 		}
 	}
 	Mash.prototype.stop = function() {
-		console.log(this.count);
 		if (this.count > 100) {
 			switch (this.col) {
 				case "green":
@@ -1752,30 +1755,30 @@ function Monk(colIn) {
 
 	switch(this.col) {
 		case "green":
-				var xOff = 2000,
-					yOff = 0,
-					sw = 218,
-					strtWobble = 0; 
-				this.xStrt = 1000;
-				this.restSpr = new Sprite(Assets.sprites.bossGreen, sw, 400);
-				this.shootSpr = new Sprite(Assets.sprites.bossGreenShoot, sw, 400, function() { gameObjs.monkG.setSprite(gameObjs.monkG.restSpr); });
-				this.shootTime = function() { this.rate = 20 + Math.round(100 * Math.random()); }
-				this.shootFunc = function() {
-					Assets.sounds.gShoot.volume = 0.2;
-					Assets.sounds.gShoot.play();
-					this.greenFire += 1;
-					if (this.greenFire === 1) {
-						this.setSprite(this.shootSpr);
-						this.shootTime();
-						this.shootWait = -1;
-					} else if (this.greenFire < 15) {
-						this.shootWait = -1;
-					} else {
-						gameObjs.bullets.push(new Bullet(this.x, this.y + 40, "green"));
-						this.greenFire = 0;
-					}
+			var xOff = 2000,
+				yOff = 0,
+				sw = 218,
+				strtWobble = 0; 
+			this.xStrt = 1000;
+			this.restSpr = new Sprite(Assets.sprites.bossGreen, sw, 400);
+			this.shootSpr = new Sprite(Assets.sprites.bossGreenShoot, sw, 400, function() { gameObjs.monkG.setSprite(gameObjs.monkG.restSpr); });
+			this.shootTime = function() { this.rate = 20 + Math.round(100 * Math.random()); }
+			this.shootFunc = function() {
+				Assets.sounds.gShoot.volume = 0.2;
+				Assets.sounds.gShoot.play();
+				this.greenFire += 1;
+				if (this.greenFire === 1) {
+					this.setSprite(this.shootSpr);
+					this.shootTime();
+					this.shootWait = -1;
+				} else if (this.greenFire < 15) {
+					this.shootWait = -1;
+				} else {
+					gameObjs.bullets.push(new Bullet(this.x, this.y + 40, "green"));
+					this.greenFire = 0;
 				}
-				break;
+			}
+			break;
 		case "blue":
 			var xOff = 5000,
 				yOff = 420,
@@ -1878,7 +1881,7 @@ function Bullet(xIn, yIn, col, ang) {
 		case "green":
 			this.col = "#21E82E";
 			this.w = 15;
-			this.l = 0;
+			this.l = 1;
 			this.dx = 20;
 			this.dy = 0;
 			break;

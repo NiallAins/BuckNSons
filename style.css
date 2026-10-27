@@ -1,0 +1,116 @@
+html,
+body {
+    overflow: hidden;
+    background-color: #000;
+}
+h1, p {
+    margin-left: 15%;
+    font-family: "Lucida Console", Monaco, monospace;
+}
+a {
+    color: rgb(7, 20, 133);
+    text-decoration: none;
+}
+#mainCanvas {
+    background-color: #000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 1.5vw;
+    cursor: none;
+}
+#buttons {
+    opacity: 0;
+    pointer-events: none;
+    width: 1100px;
+    padding-top: 350px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#buttons img {
+    opacity: 0.4;
+}
+#buttons img:hover {
+    opacity: 1;
+}
+#btn1 {
+    float: right;
+}
+#btn2 {
+    float: left;
+    cursor: pointer;
+}
+
+#controls button:not(#controlFull) {
+    --w-button: 100px;
+    --w-button-gap: 16px;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+        opacity 2s,
+        border-color 1s;
+}
+#controls #controlFull {
+    top: var(--w-button-gap);
+    left: var(--w-button-gap);
+    opacity: 1;
+    pointer-events: all;
+    color: white;
+    height: auto;
+    padding: 8px;
+}
+#controls #controlFull::after {
+    content: unset;
+}
+@media (any-hover: none) {
+    #controls.active button {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    #controls button {
+        position: fixed;
+        z-index: 100;
+        width: 100px;
+        height: 100px;
+        background: none;
+        border: 2px solid #ffff;
+        border-radius: 10%;
+    }
+    #controls button.touched {
+        opacity: 0.25;
+        border-color: #fff0;
+    }
+    #controls button::after {
+        content: '';
+        position: absolute;
+        inset: calc(var(--w-button) * 0.3);
+        border: solid #fff;
+        border-width: 4px 4px 0 0;
+        border-top-right-radius: 4px;
+        rotate: 45deg;
+        transform-origin: 40% 30%;
+    }
+    #controlLeft {
+        left: var(--w-button-gap);
+        bottom: var(--w-button-gap);
+        rotate: 180deg;
+    }
+    #controlRight {
+        left: calc(var(--w-button) + (var(--w-button-gap) * 2));
+        bottom: var(--w-button-gap);
+    }
+    #controlUp {
+        right: var(--w-button-gap);
+        bottom: calc(var(--w-button) + (var(--w-button-gap) * 2));
+        rotate: -90deg;
+    }
+    #controlDown {
+        right: var(--w-button-gap);
+        bottom: var(--w-button-gap);
+        rotate: 90deg;
+    }
+}
