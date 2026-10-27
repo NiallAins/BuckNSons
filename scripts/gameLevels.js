@@ -1,5 +1,7 @@
 var gameObjs;
 
+showMobileFullscreen();
+
 var Level = {
 	boundarys : [],
 	ladders : [],
@@ -22,8 +24,6 @@ var Level = {
 	//Place objects in level
 	load : {
 		partOne : function() {
-			showMobileFullscreen();
-
 			gameObjs = {};
 
 			//Set level background and view

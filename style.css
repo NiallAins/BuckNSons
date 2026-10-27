@@ -50,12 +50,14 @@ a {
 */
 
 .mobile {
-    --w-button: 70px;
+    --w-button: 60px;
     --w-button-mar: 16px;
-    --w-button-gap: 60px;
+    --w-button-gap: 80px;
 
     position: fixed;
     z-index: 100;
+    opacity: 0;
+    pointer-events: none;
     transition:
         opacity 2s,
         border-color 1s;
@@ -70,6 +72,9 @@ a {
     background-color: #0000;
     background-size: contain;
     background-image: url("./fullscreen.svg");
+}
+
+.mobile__fullscreen.active {
     opacity: 0.75;
 }
 
@@ -82,8 +87,6 @@ a {
     height: var(--w-button);
     border: 2px solid #ffff;
     border-radius: 10%;
-    /* opacity: 0;
-    pointer-events: none; */
     background: none;
 }
 
@@ -110,20 +113,20 @@ a {
 
 .mobile__arrow-left {
     left: var(--w-button-mar);
-    bottom: var(--w-button-mar);
+    bottom: calc(50% - (var(--w-button) * 0.5));
     rotate: 180deg;
 }
 .mobile__arrow-right {
     left: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
-    bottom: var(--w-button-mar);
+    bottom: calc(50% - (var(--w-button) * 0.5));
 }
 .mobile__arrow-up {
     right: var(--w-button-mar);
-    bottom: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
+    bottom: calc(50% + (var(--w-button-gap) * 0.5));
     rotate: -90deg;
 }
 .mobile__arrow-down {
     right: var(--w-button-mar);
-    bottom: var(--w-button-mar);
+    bottom: calc(50% - var(--w-button) - (var(--w-button-gap) * 0.5));
     rotate: 90deg;
 }

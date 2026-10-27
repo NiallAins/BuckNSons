@@ -74,7 +74,7 @@ window.ontouchmove = e => {
                 b.el.ontouchstart();
                 if (!b.touched) {
                     b.el.classList.add('touched');
-                    b.touched = false;
+                    b.touched = false; 
                 }
             } else {
                 b.el.ontouchend();
