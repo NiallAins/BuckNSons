@@ -50,9 +50,9 @@ a {
 */
 
 .mobile {
-    --w-button: 60px;
+    --w-button: 70px;
     --w-button-mar: 16px;
-    --w-button-gap: 80px;
+    --w-button-gap: 70px;
 
     position: fixed;
     z-index: 100;
