@@ -53,6 +53,15 @@ a {
         opacity 2s,
         border-color 1s;
 }
+#controls button {
+    position: fixed;
+    z-index: 100;
+    width: 100px;
+    height: 100px;
+    background: none;
+    border: 2px solid #ffff;
+    border-radius: 10%;
+}
 #controls #controlFull {
     top: var(--w-button-gap);
     left: var(--w-button-gap);
@@ -69,16 +78,6 @@ a {
     #controls.active button {
         opacity: 1;
         pointer-events: all;
-    }
-
-    #controls button {
-        position: fixed;
-        z-index: 100;
-        width: 100px;
-        height: 100px;
-        background: none;
-        border: 2px solid #ffff;
-        border-radius: 10%;
     }
     #controls button.touched {
         opacity: 0.25;

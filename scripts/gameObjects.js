@@ -1948,8 +1948,24 @@ function Menu() {
 	this.timer = 0;
 
 	Assets.sounds.static.loop = true;
-	Assets.sounds.static.play();
+
+	const keyListen = window.addEventListener('keydown', () => {
+		Assets.sounds.static.play();
+		window.removeEventListener('keydown', keyListen);
+	});
+	const clickListen = window.addEventListener('mousedown', () => {
+		Assets.sounds.static.play();
+		window.removeEventListener('mousedown', clickListen);
+	});
+	try {
+		Assets.sounds.static.play();
+		window.removeEventListener('mousedown', keyListen);
+		window.removeEventListener('mousedown', clickListen);
+	} catch (e) {
+	}
 }
+
+
 	Menu.prototype.draw = function() {
 		//Timers for title display and fades
 		if (this.timer < 120) {

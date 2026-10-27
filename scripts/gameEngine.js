@@ -136,7 +136,7 @@ const TOUCH_CONTAIN = document.getElementById('controls');
 TOUCH_RIGHT.onclick = TOUCH_LEFT.onclick = TOUCH_UP.onclick = TOUCH_DOWN.onclick = e => e.target.classList.add('touched');
 
 const TOUCH_FULL = document.getElementById('controlFull');
-TOUCH_FULL.onclick = document.getElementById('fullscreen').webkitRequestFullscreen();
+TOUCH_FULL.onclick = () => document.getElementById('fullscreen').webkitRequestFullscreen();
 
 
 /********************\
