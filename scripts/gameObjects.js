@@ -1108,7 +1108,7 @@ function Mash() {
 		}
 	}
 	Mash.prototype.stop = function() {
-		if (this.count > 100) {
+		if (this.count > appUsingMobile ? 75 : 90) {
 			switch (this.col) {
 				case "green":
 						gameObjs.bossGreen.Die();
@@ -1949,18 +1949,16 @@ function Menu() {
 
 	Assets.sounds.static.loop = true;
 
-	const keyListen = window.addEventListener('keydown', () => {
+	// Retry play if it fails due to no prior user interaction
+	const playStatic = () => {
 		Assets.sounds.static.play();
-		window.removeEventListener('keydown', keyListen);
-	});
-	const clickListen = window.addEventListener('mousedown', () => {
-		Assets.sounds.static.play();
-		window.removeEventListener('mousedown', clickListen);
-	});
+		window.removeEventListener('keydown', playStatic);
+		window.removeEventListener('mousedown', playStatic);
+	};
+	window.addEventListener('keydown', playStatic);
+	window.addEventListener('mousedown', playStatic);
 	try {
-		Assets.sounds.static.play();
-		window.removeEventListener('mousedown', keyListen);
-		window.removeEventListener('mousedown', clickListen);
+		playStatic();
 	} catch (e) {
 	}
 }

@@ -114,20 +114,20 @@ a {
 
 .mobile__arrow-left {
     left: var(--w-button-mar);
-    bottom: calc(50% - (var(--w-button) * 0.5));
+    bottom: var(--w-button);
     rotate: 180deg;
 }
 .mobile__arrow-right {
     left: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
-    bottom: calc(50% - (var(--w-button) * 0.5));
+    bottom: var(--w-button);
 }
 .mobile__arrow-up {
     right: var(--w-button-mar);
-    bottom: calc(50% + (var(--w-button-gap) * 0.5));
+    bottom: calc(var(--w-button-gap) + (var(--w-button) * 2));
     rotate: -90deg;
 }
 .mobile__arrow-down {
     right: var(--w-button-mar);
-    bottom: calc(50% - var(--w-button) - (var(--w-button-gap) * 0.5));
+    bottom: var(--w-button);
     rotate: 90deg;
 }

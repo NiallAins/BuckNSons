@@ -30,6 +30,8 @@ const HAS_TOUCH =
     (navigator.maxTouchPoints > 0) ||
     (navigator.msMaxTouchPoints > 0);
 
+let usingTouch = false;
+
 const
     EL_MOBILE_FULLSCREEN = document.querySelector('.mobile__fullscreen'),
     EL_MOBILE_LEFT = document.querySelector('.mobile__arrow-left'),
@@ -42,21 +44,39 @@ EL_MOBILE_FULLSCREEN.onclick = () => {
     document.getElementById('fullscreen').webkitRequestFullscreen();
 }
 
-EL_MOBILE_RIGHT.ontouchstart = () => window.onkeydown({ keyCode: 39 });
-EL_MOBILE_RIGHT.ontouchend =   () => window.onkeyup({ keyCode: 39 });
-EL_MOBILE_LEFT.ontouchstart =  () => window.onkeydown({ keyCode: 37 });
-EL_MOBILE_LEFT.ontouchend =    () => window.onkeyup({ keyCode: 37 });
-EL_MOBILE_UP.ontouchstart =    () => window.onkeydown({ keyCode: 38 });
-EL_MOBILE_UP.ontouchend =      () => window.onkeyup({ keyCode: 38 });
-EL_MOBILE_DOWN.ontouchstart =  () => window.onkeydown({ keyCode: 40 });
-EL_MOBILE_DOWN.ontouchend =    () => window.onkeyup({ keyCode: 40 });
-
 let touchState = [
-    { el: EL_MOBILE_LEFT,  prev: false, new: false, touched: false},
-    { el: EL_MOBILE_RIGHT, prev: false, new: false, touched: false},
-    { el: EL_MOBILE_UP,    prev: false, new: false, touched: false},
-    { el: EL_MOBILE_DOWN,  prev: false, new: false, touched: false}
+    { el: EL_MOBILE_LEFT,  code: 37 , prev: false, new: false, touched: false},
+    { el: EL_MOBILE_RIGHT, code: 39 , prev: false, new: false, touched: false},
+    { el: EL_MOBILE_UP,    code: 38 , prev: false, new: false, touched: false},
+    { el: EL_MOBILE_DOWN,  code: 40 , prev: false, new: false, touched: false}
 ];
+
+touchState.forEach(b => {
+    b.el.ontouchstart = () => {
+        if (!b.touched) {
+            b.el.classList.add('touched');
+            b.touched = true;
+            usingTouch = true;
+        };
+        switch(b.el) {
+            case EL_MOBILE_LEFT:
+                EL_MOBILE_RIGHT.ontouchend();
+            break;
+            case EL_MOBILE_RIGHT:
+                EL_MOBILE_LEFT.ontouchend();
+            break;
+            case EL_MOBILE_UP:
+                EL_MOBILE_DOWN.ontouchend();
+            break;
+            case EL_MOBILE_DOWN:
+                EL_MOBILE_UP.ontouchend();
+            break;
+        }
+        window.onkeydown({ keyCode: b.code });
+    };
+    b.el.ontouchend = b.el.ontouchcancel = () => { window.onkeyup({ keyCode: b.code }) };
+});
+
 window.ontouchmove = e => {
     Array
         .from(e.touches)
@@ -72,10 +92,6 @@ window.ontouchmove = e => {
         if (b.prev !== b.new) {
             if (b.new) {
                 b.el.ontouchstart();
-                if (!b.touched) {
-                    b.el.classList.add('touched');
-                    b.touched = false; 
-                }
             } else {
                 b.el.ontouchend();
             }
