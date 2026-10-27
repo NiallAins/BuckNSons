@@ -44,7 +44,7 @@ a {
     cursor: pointer;
 }
 
-#controls button:not(#controlFull) {
+#controls button {
     --w-button: 100px;
     --w-button-gap: 16px;
     pointer-events: none;
