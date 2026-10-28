@@ -66,7 +66,7 @@ var Level = {
 			showMobileControls();
 			dimMobileFullscreen();
 
-			gameObjs.shawn = new Shawn(200, -200);
+			gameObjs.shawn = new Shawn(appUsingTouch ? 400 : 200, -200);
 			gameObjs.gems = [
 				new Gem(600, -1000, "green"),
 				new Gem(600, -1300, "blue"),

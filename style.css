@@ -51,7 +51,7 @@ a {
 
 .mobile {
     --w-button: 70px;
-    --w-button-mar: 16px;
+    --w-button-mar: 48px;
     --w-button-gap: 70px;
 
     position: fixed;

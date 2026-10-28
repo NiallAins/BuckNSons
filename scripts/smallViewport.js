@@ -30,7 +30,7 @@ const HAS_TOUCH =
     (navigator.maxTouchPoints > 0) ||
     (navigator.msMaxTouchPoints > 0);
 
-let usingTouch = false;
+let appUsingTouch = false;
 
 const
     EL_MOBILE_FULLSCREEN = document.querySelector('.mobile__fullscreen'),
@@ -56,7 +56,7 @@ touchState.forEach(b => {
         if (!b.touched) {
             b.el.classList.add('touched');
             b.touched = true;
-            usingTouch = true;
+            appUsingTouch = true;
         };
         switch(b.el) {
             case EL_MOBILE_LEFT:
