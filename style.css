@@ -50,22 +50,19 @@ a {
 */
 
 .mobile {
-    --w-button: 70px;
-    --w-button-mar: 48px;
-    --w-button-gap: 70px;
+    --w-button: 120px;
+    --w-button-mar: 8px;
 
     position: fixed;
     z-index: 100;
     opacity: 0;
     pointer-events: none;
-    transition:
-        opacity 2s,
-        border-color 1s;
+    transition: opacity 2s;
 }
 
 .mobile__fullscreen {
-    top: var(--w-button-mar);
-    left: var(--w-button-mar);
+    top: calc(var(--w-button-mar) * 4);
+    left: calc(var(--w-button-mar) * 4);
     width: calc(var(--w-button) * 0.5);
     height: calc(var(--w-button) * 0.5);
     border: none;
@@ -86,15 +83,23 @@ a {
 .mobile__arrow {
     width: var(--w-button);
     height: var(--w-button);
-    border: 2px solid #ffff;
-    border-radius: 10%;
+    border: none;
     background: none;
+}
+.mobile__arrow::before {
+    content: '';
+    position: absolute;
+    inset: var(--w-button-mar);
+    border: 2px solid #fff;
+    border-radius: 10%;
+    opacity: 0.5;
+    transition: opacity 1s;
 }
 
 .mobile__arrow::after {
     content: '';
     position: absolute;
-    inset: calc(var(--w-button) * 0.3);
+    inset: calc(var(--w-button) * 0.375);
     border: solid #fff;
     border-width: 4px 4px 0 0;
     border-top-right-radius: 4px;
@@ -103,31 +108,33 @@ a {
 }
 
 .mobile__arrow.active {
-    opacity: 0.75;
+    opacity: 1;
     pointer-events: all;
 }
 
 .mobile__arrow.touched {
     opacity: 0.25;
-    border-color: #fff0;
+}
+.mobile__arrow.touched::before {
+    opacity: 0;
 }
 
 .mobile__arrow-left {
-    left: var(--w-button-mar);
-    bottom: var(--w-button);
+    left: 0;
+    bottom: calc(var(--w-button) * 0.5);
     rotate: 180deg;
 }
 .mobile__arrow-right {
-    left: calc(var(--w-button) + var(--w-button-mar) + var(--w-button-gap));
-    bottom: var(--w-button);
+    left: calc(var(--w-button) * 1.25);
+    bottom: calc(var(--w-button) * 0.5);
 }
 .mobile__arrow-up {
-    right: var(--w-button-mar);
-    bottom: calc(var(--w-button-gap) + (var(--w-button) * 2));
+    right: 0;
+    bottom: calc(var(--w-button) * 1.75);
     rotate: -90deg;
 }
 .mobile__arrow-down {
-    right: var(--w-button-mar);
-    bottom: var(--w-button);
+    right: 0;
+    bottom: calc(var(--w-button) * 0.5);
     rotate: 90deg;
 }

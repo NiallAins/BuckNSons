@@ -1393,6 +1393,7 @@ function Boss(col, x, y) {
 			Assets.sounds.rDeath.volume = 0.6;
 			Assets.sounds.rDeath.play();
 			this.attack = 10;
+			hideMobileControls();
 		} else {
 			Assets.sounds.gDeath.volume = 0.6;
 			Assets.sounds.bDeath.volume = 0.3;

@@ -112,6 +112,17 @@ function showMobileControls() {
     }
 }
 
+function hideMobileControls() {
+    if (HAS_TOUCH) {
+        [
+            EL_MOBILE_LEFT,
+            EL_MOBILE_RIGHT,
+            EL_MOBILE_UP,
+            EL_MOBILE_DOWN
+        ].forEach(el => el.classList.remove('active'));
+    }
+}
+
 function showMobileFullscreen() {
     if (HAS_TOUCH) {
         EL_MOBILE_FULLSCREEN.classList.add('active');
