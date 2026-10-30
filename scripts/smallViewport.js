@@ -119,7 +119,10 @@ function hideMobileControls() {
             EL_MOBILE_RIGHT,
             EL_MOBILE_UP,
             EL_MOBILE_DOWN
-        ].forEach(el => el.classList.remove('active'));
+        ].forEach(el => {
+            el.classList.remove('active');
+            el.classList.remove('touched');
+        });
     }
 }
 

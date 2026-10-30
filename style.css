@@ -63,8 +63,8 @@ a {
 .mobile__fullscreen {
     top: calc(var(--w-button-mar) * 4);
     left: calc(var(--w-button-mar) * 4);
-    width: calc(var(--w-button) * 0.5);
-    height: calc(var(--w-button) * 0.5);
+    width: calc(var(--w-button) * 0.375);
+    height: calc(var(--w-button) * 0.375);
     border: none;
     background-color: #0000;
     background-size: contain;

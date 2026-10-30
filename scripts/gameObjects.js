@@ -1108,7 +1108,7 @@ function Mash() {
 		}
 	}
 	Mash.prototype.stop = function() {
-		if (this.count > appUsingTouch ? 75 : 90) {
+		if (this.count > appUsingTouch ? 85 : 95) {
 			switch (this.col) {
 				case "green":
 						gameObjs.bossGreen.Die();
