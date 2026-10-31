@@ -108,12 +108,16 @@ a {
 }
 
 .mobile__arrow.active {
-    opacity: 1;
+    opacity: 0.75;
     pointer-events: all;
 }
 
 .mobile__arrow.touched {
     opacity: 0.25;
+}
+.mobile__arrow:not(.active) {
+    opacity: 0;
+    pointer-events: none;
 }
 .mobile__arrow.touched::before {
     opacity: 0;

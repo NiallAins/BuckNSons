@@ -474,7 +474,7 @@ function Buck(xIn, yIn) {
 	Buck.prototype.step = function() {
 		if (this.morphing) {
 			if (Math.round(this.spr.frNum) === 13) {
-				gameObjs.buck = new BuckFly(this.x, this.y - 30);
+				gameObjs.buck = new BuckFly(this.x - 18, this.y - 30);
 				delete gameObjs.shawn;
 			}
 		}
@@ -1386,6 +1386,7 @@ function Boss(col, x, y) {
 		}
 	}
 	Boss.prototype.Die = function() {
+		console.log('hey');
 		gameObjs.gemBar.totalBoss += 1;
 		gameObjs.buck.spr = gameObjs.buck.restSpr;
 		if (this.col === "red") {
@@ -1393,8 +1394,10 @@ function Boss(col, x, y) {
 			Assets.sounds.rDeath.volume = 0.6;
 			Assets.sounds.rDeath.play();
 			this.attack = 10;
+			console.log(this.col);
 			hideMobileControls();
 		} else {
+			console.log(this.col);
 			Assets.sounds.gDeath.volume = 0.6;
 			Assets.sounds.bDeath.volume = 0.3;
 			(this.col === "green") ? Assets.sounds.gDeath.play() : Assets.sounds.bDeath.play();
