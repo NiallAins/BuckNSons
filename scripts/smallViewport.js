@@ -113,7 +113,6 @@ function showMobileControls() {
 }
 
 function hideMobileControls() {
-    console.log('hey');
     [
         EL_MOBILE_LEFT,
         EL_MOBILE_RIGHT,

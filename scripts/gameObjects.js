@@ -899,6 +899,8 @@ function Death(state) {
 	this.credit3 = new Sprite(Assets.bgs.credits3, 685, 0);
 	this.credit4 = new Sprite(Assets.bgs.credits4, 685, 0);
 	this.credit5 = new Sprite(Assets.bgs.credits5, 685, 0);
+
+	hideMobileControls();
 }
 	Death.prototype.draw = function() {
 		if (this.restart) {
@@ -1386,7 +1388,6 @@ function Boss(col, x, y) {
 		}
 	}
 	Boss.prototype.Die = function() {
-		console.log('hey');
 		gameObjs.gemBar.totalBoss += 1;
 		gameObjs.buck.spr = gameObjs.buck.restSpr;
 		if (this.col === "red") {
@@ -1394,10 +1395,7 @@ function Boss(col, x, y) {
 			Assets.sounds.rDeath.volume = 0.6;
 			Assets.sounds.rDeath.play();
 			this.attack = 10;
-			console.log(this.col);
-			hideMobileControls();
 		} else {
-			console.log(this.col);
 			Assets.sounds.gDeath.volume = 0.6;
 			Assets.sounds.bDeath.volume = 0.3;
 			(this.col === "green") ? Assets.sounds.gDeath.play() : Assets.sounds.bDeath.play();
