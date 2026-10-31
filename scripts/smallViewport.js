@@ -45,10 +45,10 @@ EL_MOBILE_FULLSCREEN.onclick = () => {
 }
 
 let touchState = [
-    { el: EL_MOBILE_LEFT,  code: 37 , prev: false, new: false, touched: false},
-    { el: EL_MOBILE_RIGHT, code: 39 , prev: false, new: false, touched: false},
-    { el: EL_MOBILE_UP,    code: 38 , prev: false, new: false, touched: false},
-    { el: EL_MOBILE_DOWN,  code: 40 , prev: false, new: false, touched: false}
+    { el: EL_MOBILE_LEFT,  code: 'ArrowLeft',  prev: false, new: false, touched: false },
+    { el: EL_MOBILE_RIGHT, code: 'ArrowRight', prev: false, new: false, touched: false },
+    { el: EL_MOBILE_UP,    code: 'ArrowUp',    prev: false, new: false, touched: false },
+    { el: EL_MOBILE_DOWN,  code: 'ArrowDown',  prev: false, new: false, touched: false }
 ];
 
 touchState.forEach(b => {
@@ -72,9 +72,9 @@ touchState.forEach(b => {
                 EL_MOBILE_UP.ontouchend();
             break;
         }
-        window.onkeydown({ keyCode: b.code });
+        window.onkeydown({ code: b.code });
     };
-    b.el.ontouchend = b.el.ontouchcancel = () => { window.onkeyup({ keyCode: b.code }) };
+    b.el.ontouchend = b.el.ontouchcancel = () => { window.onkeyup({ code: b.code }) };
 });
 
 window.ontouchmove = e => {
