@@ -19,104 +19,124 @@ var kb = {
 }
 
 window.onkeydown = function(e) {
-	var key = e.keyCode ? e.keyCode : e.which;
-
-   	if (key === 39) {
+   	if (e.code === 'ArrowRight') {
    		if (!kb.right) {
    			kb.press = "right";
    		}
     	kb.right = true;
-   	} else if (key === 37) {
+   	} else if (e.code === 'ArrowLeft') {
    		if (!kb.left) {
    			kb.press = "left";
    		}
        kb.left = true;
-   	} else if (key === 38) {
+   	} else if (e.code === 'ArrowUp') {
    		if (!kb.up) {
    			kb.press = "up";
    		}
        kb.up = true;
-   	} else if (key === 40) {
+   	} else if (e.code === 'ArrowDown') {
    		if (!kb.down) {
    			kb.press = "down";
    		}
        kb.down = true;
-   	} else if (key === 32) {
+   	} else if (e.code === 'Space') {
    		if (!kb.space) {
    			kb.press = "space";
    		}
        kb.space = true;
-   	} else if (key === 87) {
+   	} else if (e.code === 'KeyW') {
    		if (!kb.w) {
    			kb.press = "w";
    		}
        kb.w = true;
-   	} else if (key === 65) {
+   	} else if (e.code === 'KeyA') {
    		if (!kb.a) {
    			kb.press = "a";
    		}
        kb.a = true;
-   	} else if (key === 83) {
+   	} else if (e.code === 'KeyS') {
    		if (!kb.s) {
    			kb.press = "s";
    		}
        kb.s = true;
-   	} else if (key === 68) {
+   	} else if (e.code === 'KeyD') {
    		if (!kb.d) {
    			kb.press = "d";
    		}
        kb.d = true;
-   	} else if (key === 90) {
+   	} else if (e.code === 'KeyZ') {
    		if (!kb.z) {
    			kb.press = "z";
    		}
        kb.z = true;
-   	} else if (key === 16) {
+   	} else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
    		if (!kb.shift) {
    			kb.press = "shift";
-   			document.getElementById('fullscreen').webkitRequestFullscreen();
+			setFullScreen();
    		}
        kb.shift = true;
    	}
 }
 
 window.onkeyup = function(e) {
-   	var key = e.keyCode ? e.keyCode : e.which;
-
-   	if (key === 39) {
+   	if (e.code === 'ArrowRight') {
        kb.right = false;
        kb.release = "right";
-   	} else if (key === 37) {
+   	} else if (e.code === 'ArrowLeft') {
        kb.left = false;
        kb.release = "left";
-   	} else if (key === 38) {
+   	} else if (e.code === 'ArrowUp') {
        kb.up = false;
        kb.release = "up";
-   	} else if (key === 40) {
+   	} else if (e.code === 'ArrowDown') {
        kb.down = false;
        kb.release = "down";
-   	} else if (key === 32) {
+   	} else if (e.code === 'Space') {
        kb.space = false;
        kb.release = "space";
-   	} else if (key === 87) {
+   	} else if (e.code === 'KeyW') {
        kb.w = false;
        kb.release = "w";
-   	} else if (key === 65) {
+   	} else if (e.code === 'KeyA') {
        kb.a = false;
        kb.release = "a";
-   	} else if (key === 83) {
+   	} else if (e.code === 'KeyS') {
        kb.s = false;
        kb.release = "s";
-   	} else if (key === 68) {
+   	} else if (e.code === 'KeyD') {
        kb.d = false;
        kb.release = "d";
-   	} else if (key === 90) {
+   	} else if (e.code === 'KeyZ') {
        kb.z = false;
        kb.release = "z";
-   	} else if (key === 16) {
+   	} else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
        kb.shift = false;
        kb.release = "shift";
    	}
+}
+
+async function setFullScreen() {
+	const EL_FULL = document.getElementById('fullscreen');
+
+	const FULL_FUNCS = 
+		['', 'webkit', 'moz']
+			.map(a => ['Request', 'Enter']
+				.map(b => ['Fullscreen', 'FullScreen']
+					.map(c => (a ? a + b : b.toLowerCase()) + c)
+				)
+			)
+			.flat(2)
+			.filter(f => EL_FULL[f])
+			.map(f => () => EL_FULL[f]());
+
+	for (let i = 0; i < FULL_FUNCS.length; i++) {
+		try {
+			await FULL_FUNCS[i]();
+			break;
+		} catch (e) {
+			console.warn(e);
+		}
+	}
 }
 
 

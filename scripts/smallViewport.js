@@ -41,7 +41,7 @@ const
 
 EL_MOBILE_FULLSCREEN.onclick = () => {
     dimMobileFullscreen();
-    document.getElementById('fullscreen').webkitRequestFullscreen();
+    setFullScreen();
 }
 
 let touchState = [

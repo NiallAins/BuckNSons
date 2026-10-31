@@ -1108,7 +1108,7 @@ function Mash() {
 		}
 	}
 	Mash.prototype.stop = function() {
-		if (this.count > appUsingTouch ? 85 : 95) {
+		if (this.count > (appUsingTouch ? 75 : 90)) {
 			switch (this.col) {
 				case "green":
 						gameObjs.bossGreen.Die();
@@ -1951,17 +1951,18 @@ function Menu() {
 	Assets.sounds.static.loop = true;
 
 	// Retry play if it fails due to no prior user interaction
-	const playStatic = () => {
-		Assets.sounds.static.play();
-		window.removeEventListener('keydown', playStatic);
-		window.removeEventListener('mousedown', playStatic);
+	const playStatic = async () => {
+		try {
+			await Assets.sounds.static.play();
+			window.removeEventListener('keydown', playStatic);
+			window.removeEventListener('mousedown', playStatic);
+		} catch (e) {
+			console.warn(e);
+		}
 	};
 	window.addEventListener('keydown', playStatic);
 	window.addEventListener('mousedown', playStatic);
-	try {
-		playStatic();
-	} catch (e) {
-	}
+	playStatic();
 }
 
 
